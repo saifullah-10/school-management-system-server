@@ -10,6 +10,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const compression_1 = __importDefault(require("compression"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const router_1 = __importDefault(require("./router"));
 const PORT = process.env.PORT || 5000;
 const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
@@ -25,7 +26,8 @@ app.use((0, compression_1.default)());
 app.get("/", (req, res) => {
     return res.status(200).json({ message: "Server running" });
 });
-//database connection
+//routes
+app.use("/", (0, router_1.default)());
 //server connection
 server.listen(PORT, () => console.log(`server running on ${PORT}`));
 //# sourceMappingURL=index.js.map
