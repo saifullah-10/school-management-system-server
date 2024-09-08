@@ -2,7 +2,6 @@ import { connectToDatabase } from "./connectToDB";
 
 export const getUserByEmail = async (email: string) => {
   try {
-    console.log(email);
     const db = await connectToDatabase();
     const usersColl = db.collection("users");
     const getByEmail = await usersColl.findOne({ email });

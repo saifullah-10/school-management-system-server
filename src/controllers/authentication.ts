@@ -27,12 +27,14 @@ export const login = async (req: express.Request, res: express.Response) => {
     const salt = random();
     const createToken = authentication(salt, user._id.toString());
     const updateToken = await updateSessionToken(email, createToken);
+    if (updateToken) {
+      user.sessionToken = createToken;
+      res.cookie("us-tk", user?.sessionToken, {
+        domain: "localhost",
+      });
 
-    res.cookie("us-tk", user?.sessionToken, {
-      domain: "localhost",
-    });
-
-    return res.status(200).json(updateToken).end();
+      return res.status(200).json(user).end();
+    }
   } catch (err) {
     console.error(err);
   }
@@ -68,16 +70,40 @@ export const registration = async (
         );
 
         const updateToken = await updateSessionToken(email, createSessionToken);
-        const userForToken = await getUserByEmail(email);
-        res.cookie("us-tk", userForToken?.sessionToken, {
-          domain: "localhost",
-        });
-        return res.status(200).json(updateToken).end();
+        if (updateToken) {
+          getUser.sessionToken = createSessionToken;
+          res.cookie("us-tk", getUser?.sessionToken, {
+            domain: "localhost",
+          });
+          return res.status(200).json(updateToken).end();
+        }
       }
       return res.status(200).json(user).end();
     }
     return res.status(400).json({ message: "User Already Exist" });
   } catch (err) {
     console.log(err);
+  }
+};
+
+//logout
+
+export const logoutUser = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(403).json({ message: "Email is Required" });
+    }
+    const updateToken = await updateSessionToken(email, "");
+    if (updateToken) {
+      res.clearCookie("us-tk", { domain: "localhost", path: "/" });
+      return res.status(200).json({ logout: true, message: "Logout Success" });
+    }
+    return res.status(400).json({ logout: false, message: "Try Again" });
+  } catch (err) {
+    console.error(err);
   }
 };

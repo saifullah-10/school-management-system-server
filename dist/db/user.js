@@ -13,7 +13,6 @@ exports.updateSessionToken = exports.createUser = exports.getUserByEmail = void 
 const connectToDB_1 = require("./connectToDB");
 const getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(email);
         const db = yield (0, connectToDB_1.connectToDatabase)();
         const usersColl = db.collection("users");
         const getByEmail = yield usersColl.findOne({ email });
