@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import dotEnv from "dotenv";
+import router from "./router";
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -28,7 +29,9 @@ app.get("/", (req: express.Request, res: express.Response) => {
   return res.status(200).json({ message: "Server running" });
 });
 
-//database connection
+//routes
+
+app.use("/", router());
 
 //server connection
 server.listen(PORT, () => console.log(`server running on ${PORT}`));
