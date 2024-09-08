@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registration = exports.login = void 0;
+exports.logoutUser = exports.registration = exports.login = void 0;
 const user_1 = require("../db/user");
 const hashPassword_1 = require("../helpers/hashPassword");
 //login controller
@@ -33,10 +33,13 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const salt = (0, hashPassword_1.random)();
         const createToken = (0, hashPassword_1.authentication)(salt, user._id.toString());
         const updateToken = yield (0, user_1.updateSessionToken)(email, createToken);
-        res.cookie("us-tk", user === null || user === void 0 ? void 0 : user.sessionToken, {
-            domain: "localhost",
-        });
-        return res.status(200).json(updateToken).end();
+        if (updateToken) {
+            user.sessionToken = createToken;
+            res.cookie("us-tk", user === null || user === void 0 ? void 0 : user.sessionToken, {
+                domain: "localhost",
+            });
+            return res.status(200).json(user).end();
+        }
     }
     catch (err) {
         console.error(err);
@@ -61,11 +64,13 @@ const registration = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 const getUser = yield (0, user_1.getUserByEmail)(email);
                 const createSessionToken = (0, hashPassword_1.authentication)(salt, getUser === null || getUser === void 0 ? void 0 : getUser._id.toString());
                 const updateToken = yield (0, user_1.updateSessionToken)(email, createSessionToken);
-                const userForToken = yield (0, user_1.getUserByEmail)(email);
-                res.cookie("us-tk", userForToken === null || userForToken === void 0 ? void 0 : userForToken.sessionToken, {
-                    domain: "localhost",
-                });
-                return res.status(200).json(updateToken).end();
+                if (updateToken) {
+                    getUser.sessionToken = createSessionToken;
+                    res.cookie("us-tk", getUser === null || getUser === void 0 ? void 0 : getUser.sessionToken, {
+                        domain: "localhost",
+                    });
+                    return res.status(200).json(updateToken).end();
+                }
             }
             return res.status(200).json(user).end();
         }
@@ -76,4 +81,23 @@ const registration = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.registration = registration;
+//logout
+const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(403).json({ message: "Email is Required" });
+        }
+        const updateToken = yield (0, user_1.updateSessionToken)(email, "");
+        if (updateToken) {
+            res.clearCookie("us-tk", { domain: "localhost", path: "/" });
+            return res.status(200).json({ logout: true, message: "Logout Success" });
+        }
+        return res.status(400).json({ logout: false, message: "Try Again" });
+    }
+    catch (err) {
+        console.error(err);
+    }
+});
+exports.logoutUser = logoutUser;
 //# sourceMappingURL=authentication.js.map
