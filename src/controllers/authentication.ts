@@ -1,5 +1,10 @@
 import express from "express";
-import { createUser, getUserByEmail, updateSessionToken } from "../db/user";
+import {
+  createUser,
+  getUserByEmail,
+  updateSessionToken,
+  updateSessionTokenById,
+} from "../db/user";
 import { authentication, random } from "../helpers/hashPassword";
 
 //login controller
@@ -94,11 +99,11 @@ export const logoutUser = async (
   res: express.Response
 ) => {
   try {
-    const { email } = req.body;
-    if (!email) {
-      return res.status(403).json({ message: "Email is Required" });
+    const { id } = req.params;
+    if (!id) {
+      return res.status(403).json({ message: "Unauthorrized" });
     }
-    const updateToken = await updateSessionToken(email, "");
+    const updateToken = await updateSessionTokenById(id, "");
     if (updateToken) {
       res.clearCookie("us-tk", { domain: "localhost", path: "/" });
       return res.status(200).json({ logout: true, message: "Logout Success" });

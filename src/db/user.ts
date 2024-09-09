@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { connectToDatabase } from "./connectToDB";
 
 export const getUserByEmail = async (email: string) => {
@@ -40,6 +41,16 @@ export const updateSessionToken = async (email: string, data: string) => {
     { email },
     { $set: { sessionToken: data } },
     options
+  );
+  return updateUser;
+};
+export const updateSessionTokenById = async (id: string, data: string) => {
+  const db = await connectToDatabase();
+  const users = db.collection("users");
+
+  const updateUser = await users.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: { sessionToken: data } }
   );
   return updateUser;
 };

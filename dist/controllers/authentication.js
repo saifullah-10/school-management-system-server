@@ -85,11 +85,11 @@ exports.registration = registration;
 //logout
 const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email } = req.body;
-        if (!email) {
-            return res.status(403).json({ message: "Email is Required" });
+        const { id } = req.params;
+        if (!id) {
+            return res.status(403).json({ message: "Unauthorrized" });
         }
-        const updateToken = yield (0, user_1.updateSessionToken)(email, "");
+        const updateToken = yield (0, user_1.updateSessionTokenById)(id, "");
         if (updateToken) {
             res.clearCookie("us-tk", { domain: "localhost", path: "/" });
             return res.status(200).json({ logout: true, message: "Logout Success" });

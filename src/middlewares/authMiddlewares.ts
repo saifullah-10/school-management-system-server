@@ -34,9 +34,11 @@ export const isOwner = async (
   try {
     const { id } = req.params;
     const identity = get(req, "identity._id") as string;
+    console.log(identity.toString(), id);
     if (!id || !identity.toString()) {
       return res.status(403).json({ message: "Unauthorized" });
     }
+
     if (id !== identity.toString()) {
       return res.status(403).json({ message: "Unauthorized" });
     }

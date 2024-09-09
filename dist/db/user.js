@@ -9,7 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserByToken = exports.updateSessionToken = exports.createUser = exports.getUserByEmail = void 0;
+exports.getUserByToken = exports.updateSessionTokenById = exports.updateSessionToken = exports.createUser = exports.getUserByEmail = void 0;
+const mongodb_1 = require("mongodb");
 const connectToDB_1 = require("./connectToDB");
 const getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -46,6 +47,13 @@ const updateSessionToken = (email, data) => __awaiter(void 0, void 0, void 0, fu
     return updateUser;
 });
 exports.updateSessionToken = updateSessionToken;
+const updateSessionTokenById = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
+    const db = yield (0, connectToDB_1.connectToDatabase)();
+    const users = db.collection("users");
+    const updateUser = yield users.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: { sessionToken: data } });
+    return updateUser;
+});
+exports.updateSessionTokenById = updateSessionTokenById;
 const getUserByToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
     const db = yield (0, connectToDB_1.connectToDatabase)();
     const users = db.collection("users");
