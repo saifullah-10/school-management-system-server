@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction } from "express";
 import { getUserByToken } from "../db/user";
 
 import { get, merge } from "lodash";
@@ -34,7 +34,7 @@ export const isOwner = async (
   try {
     const { id } = req.params;
     const identity = get(req, "identity._id") as string;
-    console.log(identity.toString(), id);
+
     if (!id || !identity.toString()) {
       return res.status(403).json({ message: "Unauthorized" });
     }
@@ -47,3 +47,13 @@ export const isOwner = async (
     console.error(err);
   }
 };
+
+// export const hasUser = async(req:express.Request, res:express.Response, next: NextFunction) =>{
+// try{
+// const {id} = req.query;
+// const identity = get(req, "identity._id") as string;
+
+// }catch(err){
+//   console.error(err)
+// }
+// }

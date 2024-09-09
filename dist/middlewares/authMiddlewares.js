@@ -35,7 +35,6 @@ const isOwner = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const { id } = req.params;
         const identity = (0, lodash_1.get)(req, "identity._id");
-        console.log(identity.toString(), id);
         if (!id || !identity.toString()) {
             return res.status(403).json({ message: "Unauthorized" });
         }
@@ -49,4 +48,12 @@ const isOwner = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.isOwner = isOwner;
+// export const hasUser = async(req:express.Request, res:express.Response, next: NextFunction) =>{
+// try{
+// const {id} = req.query;
+// const identity = get(req, "identity._id") as string;
+// }catch(err){
+//   console.error(err)
+// }
+// }
 //# sourceMappingURL=authMiddlewares.js.map

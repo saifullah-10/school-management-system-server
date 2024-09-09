@@ -6,11 +6,13 @@ import {
   updateSessionTokenById,
 } from "../db/user";
 import { authentication, random } from "../helpers/hashPassword";
+import { get, merge } from "lodash";
 
 //login controller
 export const login = async (req: express.Request, res: express.Response) => {
   try {
     const { email, password } = req.body;
+    console.log(email, password);
     if (!email || !password) {
       return res
         .status(403)
@@ -18,7 +20,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     }
 
     const user = await getUserByEmail(email);
-    console.log(user);
+
     if (!user) {
       return res.status(403).json({ message: "Invalid Email Or Password" });
     }
@@ -31,7 +33,9 @@ export const login = async (req: express.Request, res: express.Response) => {
     }
 
     const salt = random();
-    const createToken = authentication(salt, user._id.toString());
+    const uid = user?._id;
+    const createToken = authentication(salt, user._id.toString(), uid);
+
     const updateToken = await updateSessionToken(email, createToken);
     if (updateToken) {
       user.sessionToken = createToken;
@@ -69,10 +73,11 @@ export const registration = async (
 
       if (user) {
         const getUser = await getUserByEmail(email);
-
+        const uid = getUser?._id;
         const createSessionToken = authentication(
           salt,
-          getUser?._id.toString()
+          getUser?._id.toString(),
+          uid
         );
 
         const updateToken = await updateSessionToken(email, createSessionToken);
@@ -112,4 +117,14 @@ export const logoutUser = async (
   } catch (err) {
     console.error(err);
   }
+};
+
+//isUser
+
+export const isUser = async (req: express.Request, res: express.Response) => {
+  const user = get(req, "identity");
+  if (!user) {
+    return res.status(400).json({ success: false });
+  }
+  return res.status(200).json(merge(user, { success: true }));
 };
