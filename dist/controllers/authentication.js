@@ -9,13 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logoutUser = exports.registration = exports.login = void 0;
+exports.isUser = exports.logoutUser = exports.registration = exports.login = void 0;
 const user_1 = require("../db/user");
 const hashPassword_1 = require("../helpers/hashPassword");
+const lodash_1 = require("lodash");
 //login controller
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
+        console.log(email, password);
         if (!email || !password) {
             return res
                 .status(403)
@@ -31,7 +33,8 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(400).json({ message: "Email Or Password Mismatch" });
         }
         const salt = (0, hashPassword_1.random)();
-        const createToken = (0, hashPassword_1.authentication)(salt, user._id.toString());
+        const uid = user === null || user === void 0 ? void 0 : user._id;
+        const createToken = (0, hashPassword_1.authentication)(salt, user._id.toString(), uid);
         const updateToken = yield (0, user_1.updateSessionToken)(email, createToken);
         if (updateToken) {
             user.sessionToken = createToken;
@@ -62,7 +65,8 @@ const registration = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             const user = yield (0, user_1.createUser)(email, hashPass, salt, username);
             if (user) {
                 const getUser = yield (0, user_1.getUserByEmail)(email);
-                const createSessionToken = (0, hashPassword_1.authentication)(salt, getUser === null || getUser === void 0 ? void 0 : getUser._id.toString());
+                const uid = getUser === null || getUser === void 0 ? void 0 : getUser._id;
+                const createSessionToken = (0, hashPassword_1.authentication)(salt, getUser === null || getUser === void 0 ? void 0 : getUser._id.toString(), uid);
                 const updateToken = yield (0, user_1.updateSessionToken)(email, createSessionToken);
                 if (updateToken) {
                     getUser.sessionToken = createSessionToken;
@@ -84,11 +88,11 @@ exports.registration = registration;
 //logout
 const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email } = req.body;
-        if (!email) {
-            return res.status(403).json({ message: "Email is Required" });
+        const { id } = req.params;
+        if (!id) {
+            return res.status(403).json({ message: "Unauthorrized" });
         }
-        const updateToken = yield (0, user_1.updateSessionToken)(email, "");
+        const updateToken = yield (0, user_1.updateSessionTokenById)(id, "");
         if (updateToken) {
             res.clearCookie("us-tk", { domain: "localhost", path: "/" });
             return res.status(200).json({ logout: true, message: "Logout Success" });
@@ -100,4 +104,13 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.logoutUser = logoutUser;
+//isUser
+const isUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = (0, lodash_1.get)(req, "identity");
+    if (!user) {
+        return res.status(400).json({ success: false });
+    }
+    return res.status(200).json((0, lodash_1.merge)(user, { success: true }));
+});
+exports.isUser = isUser;
 //# sourceMappingURL=authentication.js.map
