@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateSessionToken = exports.createUser = exports.getUserByEmail = void 0;
+exports.getUserByToken = exports.updateSessionToken = exports.createUser = exports.getUserByEmail = void 0;
 const connectToDB_1 = require("./connectToDB");
 const getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -46,4 +46,11 @@ const updateSessionToken = (email, data) => __awaiter(void 0, void 0, void 0, fu
     return updateUser;
 });
 exports.updateSessionToken = updateSessionToken;
+const getUserByToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    const db = yield (0, connectToDB_1.connectToDatabase)();
+    const users = db.collection("users");
+    const userByToken = yield users.findOne({ sessionToken: token });
+    return userByToken;
+});
+exports.getUserByToken = getUserByToken;
 //# sourceMappingURL=user.js.map

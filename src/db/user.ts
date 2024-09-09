@@ -43,3 +43,11 @@ export const updateSessionToken = async (email: string, data: string) => {
   );
   return updateUser;
 };
+
+export const getUserByToken = async (token: string) => {
+  const db = await connectToDatabase();
+  const users = db.collection("users");
+
+  const userByToken = await users.findOne({ sessionToken: token });
+  return userByToken;
+};
