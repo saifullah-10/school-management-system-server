@@ -13,6 +13,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     }
 
     const user = await getUserByEmail(email);
+    console.log(user);
     if (!user) {
       return res.status(403).json({ message: "Invalid Email Or Password" });
     }

@@ -22,6 +22,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 .json({ message: "Email and Password are required" });
         }
         const user = yield (0, user_1.getUserByEmail)(email);
+        console.log(user);
         if (!user) {
             return res.status(403).json({ message: "Invalid Email Or Password" });
         }
