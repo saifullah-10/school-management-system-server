@@ -1,14 +1,8 @@
-import express, { NextFunction } from "express";
-import { getUserByEmail, getUserByToken } from "../db/user";
+import express from "express";
+import { getUserByEmail } from "../db/user";
 import jwt from "jsonwebtoken";
 
 import { get, merge } from "lodash";
-
-import { Request } from "express";
-
-interface AuthenticatedRequest extends Request {
-  user?: any;
-}
 
 export const isAuthenticate = async (
   req: express.Request,

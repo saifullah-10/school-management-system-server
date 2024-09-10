@@ -43,7 +43,6 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         res
             .cookie("token", token, {
-            domain: "localhost",
             httpOnly: true,
             sameSite: "none",
             secure: true,
@@ -101,10 +100,10 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         return res
             .clearCookie("token", {
-            sameSite: "none",
+            maxAge: 0,
             httpOnly: true,
+            sameSite: "none",
             secure: true,
-            domain: "localhost",
         })
             .status(200)
             .json({ logout: true });

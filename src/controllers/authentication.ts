@@ -40,7 +40,6 @@ export const login = async (req: express.Request, res: express.Response) => {
     });
     res
       .cookie("token", token, {
-        domain: "localhost",
         httpOnly: true,
         sameSite: "none",
         secure: true,
@@ -114,10 +113,10 @@ export const logoutUser = async (
   try {
     return res
       .clearCookie("token", {
-        sameSite: "none",
+        maxAge: 0,
         httpOnly: true,
+        sameSite: "none",
         secure: true,
-        domain: "localhost",
       })
       .status(200)
       .json({ logout: true });
