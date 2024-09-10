@@ -16,24 +16,14 @@ export const isAuthenticate = async (
   next: express.NextFunction
 ) => {
   const token = req.cookies.token;
-  if (!token) return res.sendStatus(401).json({ message: "session expired" });
+  if (!token) {
+    return res.status(401).json({ message: "session expired" });
+  }
   try {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET);
     const user = await getUserByEmail(decoded.email);
     merge(req, { identity: user });
     next();
-    // jwt.verify(
-    //   token,
-    //   process.env.JWT_SECRET,
-    //   async (err: Error, decoded: any) => {
-    //     if (err)
-    //       return res.sendStatus(403).json({ message: "session invalid" });
-    //     // req.user = decoded;
-    //     const user = await getUserByEmail(decoded.email);
-    //     merge(req, { identity: user });
-    //     next();
-    //   }
-    // );
   } catch (err) {
     return res
       .clearCookie("token")
