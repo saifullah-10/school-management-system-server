@@ -15,24 +15,30 @@ export const isAuthenticate = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
+  const token = req.cookies.token;
+  if (!token) return res.sendStatus(401).json({ message: "session expired" });
   try {
-    const token = req.cookies.token;
-    if (!token) return res.sendStatus(401).json({ message: "session expired" });
-
-    jwt.verify(
-      token,
-      process.env.JWT_SECRET,
-      async (err: Error, decoded: any) => {
-        if (err)
-          return res.sendStatus(403).json({ message: "session invalid" });
-        // req.user = decoded;
-        const user = await getUserByEmail(decoded.email);
-        merge(req, { identity: user });
-        next();
-      }
-    );
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await getUserByEmail(decoded.email);
+    merge(req, { identity: user });
+    next();
+    // jwt.verify(
+    //   token,
+    //   process.env.JWT_SECRET,
+    //   async (err: Error, decoded: any) => {
+    //     if (err)
+    //       return res.sendStatus(403).json({ message: "session invalid" });
+    //     // req.user = decoded;
+    //     const user = await getUserByEmail(decoded.email);
+    //     merge(req, { identity: user });
+    //     next();
+    //   }
+    // );
   } catch (err) {
-    console.error(err);
+    return res
+      .clearCookie("token")
+      .status(403)
+      .json({ message: "session invalid" });
   }
 };
 

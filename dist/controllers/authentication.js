@@ -41,18 +41,18 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const token = jsonwebtoken_1.default.sign({ email }, process.env.JWT_SECRET, {
             expiresIn: "1h",
         });
+        res
+            .cookie("token", token, {
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+        })
+            .status(200)
+            .json({ message: "Logged in" });
         //TODO not need to send token in database
-        const updateToken = yield (0, user_1.updateSessionToken)(email, token);
-        if (updateToken.modifiedCount === 1) {
-            res
-                .cookie("token", token, {
-                httpOnly: true,
-                sameSite: "none",
-                secure: true,
-            })
-                .status(200)
-                .json({ message: "Logged in" });
-        }
+        // const updateToken = await updateSessionToken(email, token);
+        // if (updateToken.modifiedCount === 1) {
+        // }
     }
     catch (err) {
         console.error(err);
@@ -98,22 +98,17 @@ exports.registration = registration;
 //logout
 const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id } = req.params;
-        if (!id) {
-            return res.status(403).json({ message: "Unauthorrized" });
-        }
-        const updateToken = yield (0, user_1.updateSessionTokenById)(id, "");
-        if (updateToken) {
-            res.clearCookie("us-tk", { domain: "localhost", path: "/" });
-            return res.status(200).json({ logout: true, message: "Logout Success" });
-        }
-        return res.status(400).json({ logout: false, message: "Try Again" });
+        return res
+            .clearCookie("token")
+            .status(200)
+            .json({ logout: true, message: "Try Again" });
     }
     catch (err) {
         console.error(err);
     }
 });
 exports.logoutUser = logoutUser;
+//isUser
 const isUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = (0, lodash_1.get)(req, "identity");
     if (user) {

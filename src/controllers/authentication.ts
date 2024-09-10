@@ -38,19 +38,20 @@ export const login = async (req: express.Request, res: express.Response) => {
     const token = jwt.sign({ email }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      })
+      .status(200)
+      .json({ message: "Logged in" });
     //TODO not need to send token in database
-    const updateToken = await updateSessionToken(email, token);
+    // const updateToken = await updateSessionToken(email, token);
 
-    if (updateToken.modifiedCount === 1) {
-      res
-        .cookie("token", token, {
-          httpOnly: true,
-          sameSite: "none",
-          secure: true,
-        })
-        .status(200)
-        .json({ message: "Logged in" });
-    }
+    // if (updateToken.modifiedCount === 1) {
+
+    // }
   } catch (err) {
     console.error(err);
   }
@@ -110,24 +111,16 @@ export const logoutUser = async (
   res: express.Response
 ) => {
   try {
-    const { id } = req.params;
-    if (!id) {
-      return res.status(403).json({ message: "Unauthorrized" });
-    }
-    const updateToken = await updateSessionTokenById(id, "");
-    if (updateToken) {
-      res.clearCookie("us-tk", { domain: "localhost", path: "/" });
-      return res.status(200).json({ logout: true, message: "Logout Success" });
-    }
-    return res.status(400).json({ logout: false, message: "Try Again" });
+    return res
+      .clearCookie("token")
+      .status(200)
+      .json({ logout: true, message: "Try Again" });
   } catch (err) {
     console.error(err);
   }
 };
 
 //isUser
-
-interface User {}
 
 export const isUser = async (req: express.Request, res: express.Response) => {
   const user = get(req, "identity");

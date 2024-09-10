@@ -17,21 +17,32 @@ const user_1 = require("../db/user");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const lodash_1 = require("lodash");
 const isAuthenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.cookies.token;
+    if (!token)
+        return res.sendStatus(401).json({ message: "session expired" });
     try {
-        const token = req.cookies.token;
-        if (!token)
-            return res.sendStatus(401).json({ message: "session expired" });
-        jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET, (err, decoded) => __awaiter(void 0, void 0, void 0, function* () {
-            if (err)
-                return res.sendStatus(403).json({ message: "session invalid" });
-            // req.user = decoded;
-            const user = yield (0, user_1.getUserByEmail)(decoded.email);
-            (0, lodash_1.merge)(req, { identity: user });
-            next();
-        }));
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        const user = yield (0, user_1.getUserByEmail)(decoded.email);
+        (0, lodash_1.merge)(req, { identity: user });
+        next();
+        // jwt.verify(
+        //   token,
+        //   process.env.JWT_SECRET,
+        //   async (err: Error, decoded: any) => {
+        //     if (err)
+        //       return res.sendStatus(403).json({ message: "session invalid" });
+        //     // req.user = decoded;
+        //     const user = await getUserByEmail(decoded.email);
+        //     merge(req, { identity: user });
+        //     next();
+        //   }
+        // );
     }
     catch (err) {
-        console.error(err);
+        return res
+            .clearCookie("token")
+            .status(403)
+            .json({ message: "session invalid" });
     }
 });
 exports.isAuthenticate = isAuthenticate;
