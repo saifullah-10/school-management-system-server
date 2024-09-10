@@ -46,6 +46,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             httpOnly: true,
             sameSite: "none",
             secure: true,
+            maxAge: 60 * 60 * 60,
         })
             .status(200)
             .json({ message: "Logged in" });
