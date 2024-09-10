@@ -36,7 +36,8 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "mongodb": "^6.8.1"
+    "mongodb": "^6.8.1",
+    "ts-node": "^10.9.2"
   },
   "pre-commit": [
     "ts.check",
