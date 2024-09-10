@@ -1,28 +1,34 @@
 import express, { NextFunction } from "express";
-import { getUserByToken } from "../db/user";
+import { getUserByEmail, getUserByToken } from "../db/user";
+import jwt from "jsonwebtoken";
 
 import { get, merge } from "lodash";
+
+import { Request } from "express";
+
+interface AuthenticatedRequest extends Request {
+  user?: any;
+}
 
 export const isAuthenticate = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(401).json({ message: "session expired" });
+  }
   try {
-    const token = req.cookies["us-tk"];
-    console.log(token);
-    if (!token) {
-      return res.status(400).json({ message: "Session expired" });
-    }
-
-    const user = await getUserByToken(token);
-    if (!user) {
-      return res.status(400).json({ message: "Session expired" });
-    }
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await getUserByEmail(decoded.email);
     merge(req, { identity: user });
-    return next();
+    next();
   } catch (err) {
-    console.error(err);
+    return res
+      .clearCookie("token")
+      .status(403)
+      .json({ message: "session invalid" });
   }
 };
 
@@ -47,13 +53,3 @@ export const isOwner = async (
     console.error(err);
   }
 };
-
-// export const hasUser = async(req:express.Request, res:express.Response, next: NextFunction) =>{
-// try{
-// const {id} = req.query;
-// const identity = get(req, "identity._id") as string;
-
-// }catch(err){
-//   console.error(err)
-// }
-// }

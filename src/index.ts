@@ -13,7 +13,6 @@ const server = http.createServer(app);
 dotEnv.config();
 
 //middleware
-
 app.use(
   cors({
     origin: [
