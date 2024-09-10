@@ -43,10 +43,8 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         res
             .cookie("token", token, {
-            domain: "localhost",
             httpOnly: true,
             sameSite: "none",
-            secure: true,
         })
             .status(200)
             .json({ message: "Logged in" });
@@ -103,8 +101,6 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             .clearCookie("token", {
             sameSite: "none",
             httpOnly: true,
-            secure: true,
-            domain: "localhost",
         })
             .status(200)
             .json({ logout: true });
