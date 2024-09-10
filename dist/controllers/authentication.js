@@ -98,7 +98,10 @@ exports.registration = registration;
 //logout
 const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return res.clearCookie("token").status(200).json({ logout: true });
+        return res
+            .clearCookie("token", { sameSite: "none", httpOnly: true, secure: true })
+            .status(200)
+            .json({ logout: true });
     }
     catch (err) {
         console.error(err);
