@@ -45,6 +45,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             .cookie("token", token, {
             httpOnly: true,
             sameSite: "none",
+            secure: true,
         })
             .status(200)
             .json({ message: "Logged in" });
