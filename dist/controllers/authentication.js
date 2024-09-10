@@ -101,6 +101,7 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         return res
             .clearCookie("token", {
+            domain: "school-management-system-server-ashen.vercel.app",
             maxAge: 0,
             httpOnly: true,
             sameSite: "none",
