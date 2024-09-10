@@ -40,6 +40,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     });
     res
       .cookie("token", token, {
+        domain: "school-management-system-server-ashen.vercel.app",
         httpOnly: true,
         sameSite: "none",
         secure: true,
@@ -112,13 +113,14 @@ export const logoutUser = async (
   res: express.Response
 ) => {
   try {
+    console.log("inside logout");
     return res
       .clearCookie("token", {
         domain: "school-management-system-server-ashen.vercel.app",
-        maxAge: 0,
         httpOnly: true,
         sameSite: "none",
         secure: true,
+        maxAge: 0,
       })
       .status(200)
       .json({ logout: true });

@@ -43,6 +43,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         res
             .cookie("token", token, {
+            domain: "school-management-system-server-ashen.vercel.app",
             httpOnly: true,
             sameSite: "none",
             secure: true,
@@ -99,13 +100,14 @@ exports.registration = registration;
 //logout
 const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log("inside logout");
         return res
             .clearCookie("token", {
             domain: "school-management-system-server-ashen.vercel.app",
-            maxAge: 0,
             httpOnly: true,
             sameSite: "none",
             secure: true,
+            maxAge: 0,
         })
             .status(200)
             .json({ logout: true });
