@@ -115,12 +115,11 @@ export const logoutUser = async (
     const token = req.cookies.token;
     console.log("before remove  ", token);
     const clearCk = res.clearCookie("token", {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
       maxAge: 0,
     });
     console.log("after remove  ", token);
+
+    console.log("Operation ", clearCk);
     return res.status(200).json({ logout: true });
   } catch (err) {
     console.error(err);
