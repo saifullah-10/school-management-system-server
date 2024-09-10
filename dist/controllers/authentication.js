@@ -99,16 +99,16 @@ exports.registration = registration;
 //logout
 const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("inside logout");
-        return res
-            .cookie("token", "", {
+        const token = req.cookies.token;
+        console.log("before remove  ", token);
+        const clearCk = res.clearCookie("token", {
             httpOnly: true,
             sameSite: "none",
             secure: true,
             maxAge: 0,
-        })
-            .status(200)
-            .json({ logout: true });
+        });
+        console.log("after remove  ", token);
+        return res.status(200).json({ logout: true });
     }
     catch (err) {
         console.error(err);
