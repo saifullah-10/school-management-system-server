@@ -102,6 +102,7 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const token = req.cookies.token;
         console.log("before remove  ", token);
         const clearCk = res.clearCookie("token", {
+            domain: ".school-management-system-server-ashen.vercel.app",
             maxAge: 0,
         });
         console.log("after remove  ", token);
