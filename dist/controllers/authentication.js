@@ -101,8 +101,7 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         console.log("inside logout");
         return res
-            .clearCookie("token", {
-            path: "/",
+            .cookie("token", "", {
             httpOnly: true,
             sameSite: "none",
             secure: true,
