@@ -112,7 +112,12 @@ export const logoutUser = async (
 ) => {
   try {
     return res
-      .clearCookie("token", { sameSite: "none", httpOnly: true, secure: true })
+      .clearCookie("token", {
+        sameSite: "none",
+        httpOnly: true,
+        secure: true,
+        domain: "localhost",
+      })
       .status(200)
       .json({ logout: true });
   } catch (err) {
