@@ -1,4 +1,6 @@
 import express from "express";
+import dotEnv from "dotenv";
+dotEnv.config();
 import {
   createUser,
   getUserByEmail,
@@ -7,6 +9,7 @@ import {
 } from "../db/user";
 import { authentication, random } from "../helpers/hashPassword";
 import { get, merge } from "lodash";
+import jwt from "jsonwebtoken";
 
 //login controller
 export const login = async (req: express.Request, res: express.Response) => {
@@ -32,19 +35,23 @@ export const login = async (req: express.Request, res: express.Response) => {
       return res.status(400).json({ message: "Email Or Password Mismatch" });
     }
 
-    const salt = random();
-    const uid = user?._id;
-    const createToken = authentication(salt, user._id.toString(), uid);
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      })
+      .status(200)
+      .json({ message: "Logged in" });
+    //TODO not need to send token in database
+    // const updateToken = await updateSessionToken(email, token);
 
-    const updateToken = await updateSessionToken(email, createToken);
-    if (updateToken) {
-      user.sessionToken = createToken;
-      res.cookie("us-tk", user?.sessionToken, {
-        domain: "localhost",
-      });
+    // if (updateToken.modifiedCount === 1) {
 
-      return res.status(200).json(user).end();
-    }
+    // }
   } catch (err) {
     console.error(err);
   }
@@ -104,16 +111,10 @@ export const logoutUser = async (
   res: express.Response
 ) => {
   try {
-    const { id } = req.params;
-    if (!id) {
-      return res.status(403).json({ message: "Unauthorrized" });
-    }
-    const updateToken = await updateSessionTokenById(id, "");
-    if (updateToken) {
-      res.clearCookie("us-tk", { domain: "localhost", path: "/" });
-      return res.status(200).json({ logout: true, message: "Logout Success" });
-    }
-    return res.status(400).json({ logout: false, message: "Try Again" });
+    return res
+      .clearCookie("token")
+      .status(200)
+      .json({ logout: true, message: "Try Again" });
   } catch (err) {
     console.error(err);
   }
@@ -123,8 +124,7 @@ export const logoutUser = async (
 
 export const isUser = async (req: express.Request, res: express.Response) => {
   const user = get(req, "identity");
-  if (!user) {
-    return res.status(400).json({ success: false });
+  if (user) {
+    return res.status(200).json(merge(user, { message: "from protected" }));
   }
-  return res.status(200).json(merge(user, { success: true }));
 };
