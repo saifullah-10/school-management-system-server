@@ -13,10 +13,12 @@ const server = http.createServer(app);
 dotEnv.config();
 
 //middleware
-
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: [
+      "http://localhost:3000",
+      "https://school-management-system-client-delta.vercel.app",
+    ],
     credentials: true,
   })
 );

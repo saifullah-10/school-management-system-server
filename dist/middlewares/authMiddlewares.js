@@ -8,23 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isOwner = exports.isAuthenticate = void 0;
 const user_1 = require("../db/user");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const lodash_1 = require("lodash");
 const isAuthenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const token = req.cookies["us-tk"];
-        console.log(token);
-        if (!token) {
-            return res.status(400).json({ message: "Session expired" });
-        }
-        const user = yield (0, user_1.getUserByToken)(token);
-        if (!user) {
-            return res.status(400).json({ message: "Session expired" });
-        }
-        (0, lodash_1.merge)(req, { identity: user });
-        return next();
+        const token = req.cookies.token;
+        if (!token)
+            return res.sendStatus(401).json({ message: "session expired" });
+        jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET, (err, decoded) => __awaiter(void 0, void 0, void 0, function* () {
+            if (err)
+                return res.sendStatus(403).json({ message: "session invalid" });
+            // req.user = decoded;
+            const user = yield (0, user_1.getUserByEmail)(decoded.email);
+            (0, lodash_1.merge)(req, { identity: user });
+            next();
+        }));
     }
     catch (err) {
         console.error(err);
@@ -48,12 +52,4 @@ const isOwner = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.isOwner = isOwner;
-// export const hasUser = async(req:express.Request, res:express.Response, next: NextFunction) =>{
-// try{
-// const {id} = req.query;
-// const identity = get(req, "identity._id") as string;
-// }catch(err){
-//   console.error(err)
-// }
-// }
 //# sourceMappingURL=authMiddlewares.js.map
