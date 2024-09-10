@@ -114,8 +114,7 @@ export const logoutUser = async (
   try {
     console.log("inside logout");
     return res
-      .clearCookie("token", {
-        path: "/",
+      .cookie("token", "", {
         httpOnly: true,
         sameSite: "none",
         secure: true,
