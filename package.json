@@ -34,12 +34,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-<<<<<<< HEAD
-    "mongodb": "^6.8.1",
     "ts-node": "^10.9.2",
-=======
     "jsonwebtoken": "^9.0.2",
->>>>>>> d9ef9757097d9e03b1f3811abfd3dac6e3c5288c
     "lodash": "^4.17.21",
     "mongodb": "^6.8.1"
   },
