@@ -43,7 +43,6 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         res
             .cookie("token", token, {
-            domain: "school-management-system-server-ashen.vercel.app",
             httpOnly: true,
             sameSite: "none",
             secure: true,
@@ -103,7 +102,7 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         console.log("inside logout");
         return res
             .clearCookie("token", {
-            domain: "school-management-system-server-ashen.vercel.app",
+            path: "/",
             httpOnly: true,
             sameSite: "none",
             secure: true,
