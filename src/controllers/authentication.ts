@@ -40,6 +40,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     });
     res
       .cookie("token", token, {
+        domain: "localhost",
         httpOnly: true,
         sameSite: "none",
         secure: true,
