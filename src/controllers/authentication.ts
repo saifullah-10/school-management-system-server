@@ -114,6 +114,7 @@ export const logoutUser = async (
   try {
     return res
       .clearCookie("token", {
+        domain: "school-management-system-server-ashen.vercel.app",
         maxAge: 0,
         httpOnly: true,
         sameSite: "none",
