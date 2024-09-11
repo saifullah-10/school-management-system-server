@@ -41,7 +41,6 @@ export const login = async (req: express.Request, res: express.Response) => {
     });
     res
       .cookie("token", token, {
-        domain: "school-management-system-client-delta.vercel.app",
         sameSite: "none",
         secure: true,
       })
@@ -115,7 +114,6 @@ export const logoutUser = async (
     const tokenf = req.cookies.token;
     console.log("before remove  ", tokenf);
     res.clearCookie("token", {
-      domain: "school-management-system-server-ashen.vercel.app",
       sameSite: "none",
       secure: true,
     });
