@@ -114,7 +114,6 @@ export const logoutUser = async (
 ) => {
   try {
     res.clearCookie("token", {
-      domain: ".vercel.app",
       httpOnly: true,
       sameSite: "none",
       secure: true,

@@ -100,7 +100,6 @@ exports.registration = registration;
 const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         res.clearCookie("token", {
-            domain: ".vercel.app",
             httpOnly: true,
             sameSite: "none",
             secure: true,
