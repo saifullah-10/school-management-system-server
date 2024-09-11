@@ -43,7 +43,7 @@ export const login = async (req: express.Request, res: express.Response) => {
         httpOnly: true,
         sameSite: "none",
         secure: true,
-        maxAge: 60 * 60 * 60,
+        maxAge: 60 * 60 * 60 * 24,
       })
       .status(200)
       .json({ message: "Logged in" });
@@ -115,12 +115,13 @@ export const logoutUser = async (
     const token = req.cookies.token;
     console.log("before remove  ", token);
     const clearCk = res.clearCookie("token", {
-      domain: ".school-management-system-server-ashen.vercel.app",
-      maxAge: 0,
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+      path: "/",
     });
     console.log("after remove  ", token);
 
-    console.log("Operation ", clearCk);
     return res.status(200).json({ logout: true });
   } catch (err) {
     console.error(err);

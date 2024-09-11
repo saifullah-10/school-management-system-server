@@ -46,7 +46,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             httpOnly: true,
             sameSite: "none",
             secure: true,
-            maxAge: 60 * 60 * 60,
+            maxAge: 60 * 60 * 60 * 24,
         })
             .status(200)
             .json({ message: "Logged in" });
@@ -102,11 +102,12 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const token = req.cookies.token;
         console.log("before remove  ", token);
         const clearCk = res.clearCookie("token", {
-            domain: ".school-management-system-server-ashen.vercel.app",
-            maxAge: 0,
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+            path: "/",
         });
         console.log("after remove  ", token);
-        console.log("Operation ", clearCk);
         return res.status(200).json({ logout: true });
     }
     catch (err) {
