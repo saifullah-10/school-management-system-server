@@ -17,9 +17,13 @@ const user_1 = require("../db/user");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const lodash_1 = require("lodash");
 const isAuthenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = req.cookies.token;
-    if (!token) {
-        return res.status(401).json({ message: "session expired" });
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) {
+        return res.status(403).json({ message: "Forbidden" });
+    }
+    const token = authHeader.split(" ")[1];
+    if (token === null) {
+        return res.status(401);
     }
     try {
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
@@ -28,15 +32,7 @@ const isAuthenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         next();
     }
     catch (err) {
-        return res
-            .clearCookie("token", {
-            httpOnly: true,
-            sameSite: "none",
-            secure: true,
-            path: "/",
-        })
-            .status(403)
-            .json({ message: "session invalid" });
+        return res.status(403).json({ message: "Forbidden" });
     }
 });
 exports.isAuthenticate = isAuthenticate;

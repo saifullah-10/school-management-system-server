@@ -5,8 +5,8 @@ dotEnv.config();
 import {
   createUser,
   getUserByEmail,
+  getUserByToken,
   updateSessionToken,
-  updateSessionTokenById,
 } from "../db/user";
 import { authentication, random } from "../helpers/hashPassword";
 import { get, merge } from "lodash";
@@ -36,24 +36,19 @@ export const login = async (req: express.Request, res: express.Response) => {
       return res.status(400).json({ message: "Email Or Password Mismatch" });
     }
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-      expiresIn: "24h",
+    const accessToken = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: "10m",
     });
-    res
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 24 * 60 * 60 * 1000,
-      })
-      .status(200)
-      .json({ message: "Logged in" });
-    //TODO not need to send token in database
-    // const updateToken = await updateSessionToken(email, token);
+    const refreshToken = jwt.sign({ email }, process.env.JWT_REFRESH_SECRET, {
+      expiresIn: "10d",
+    });
 
-    // if (updateToken.modifiedCount === 1) {
-
-    // }
+    const setInDb = await updateSessionToken(email, refreshToken);
+    if (setInDb.modifiedCount) {
+      return res.status(200).json({ token: accessToken, refreshToken });
+    } else {
+      return res.status(403).json({ message: "forbidden" });
+    }
   } catch (err) {
     console.error(err);
   }
@@ -134,3 +129,10 @@ export const isUser = async (req: express.Request, res: express.Response) => {
     return res.status(200).json(merge(user, { message: "from protected" }));
   }
 };
+
+//refresh token
+// export const refreshToken = async () => {
+//   try {
+//     const user = getUserByToken();
+//   } catch (err) {}
+// };
