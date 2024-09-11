@@ -17,33 +17,7 @@ export const login = async (req: express.Request, res: express.Response) => {
         .json({ message: "Email and Password are required" });
     }
 
-    const user = await getUserByEmail(email);
-
-    if (!user) {
-      return res.status(403).json({ message: "Invalid Email Or Password" });
-    }
-    const expectedHash = authentication(user.authentication.salt, password);
-
-    const dbPass = user.authentication.password;
-
-    if (expectedHash !== dbPass) {
-      return res.status(400).json({ message: "Email Or Password Mismatch" });
-    }
-    res.send(email);
-    const accessToken = jwt.sign({ email }, process.env.JWT_SECRET, {
-      expiresIn: "10m",
-    });
-
-    const refreshToken = jwt.sign({ email }, process.env.JWT_REFRESH_SECRET, {
-      expiresIn: "10d",
-    });
-
-    const setInDb = await updateSessionToken(email, refreshToken);
-    if (setInDb.modifiedCount) {
-      return res.status(200).json({ token: accessToken });
-    } else {
-      return res.status(403).json({ message: "forbidden" });
-    }
+    
   } catch (err) {
     console.error(err);
   }
