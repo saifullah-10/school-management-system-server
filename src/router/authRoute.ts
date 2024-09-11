@@ -5,7 +5,7 @@ import {
   logoutUser,
   registration,
 } from "../controllers/authentication";
-import { isAuthenticate, isOwner } from "../middlewares/authMiddlewares";
+import { isAuthenticate } from "../middlewares/authMiddlewares";
 
 export default (router: express.Router) => {
   router.post("/auth/register", registration);

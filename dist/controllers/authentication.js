@@ -34,11 +34,11 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(403).json({ message: "Invalid Email Or Password" });
         }
         const expectedHash = (0, hashPassword_1.authentication)(user.authentication.salt, password);
-        console.log(process.env.JWT_SECRET);
         const dbPass = user.authentication.password;
         if (expectedHash !== dbPass) {
             return res.status(400).json({ message: "Email Or Password Mismatch" });
         }
+        res.send(email);
         const accessToken = jsonwebtoken_1.default.sign({ email }, process.env.JWT_SECRET, {
             expiresIn: "10m",
         });
@@ -47,7 +47,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         const setInDb = yield (0, user_1.updateSessionToken)(email, refreshToken);
         if (setInDb.modifiedCount) {
-            return res.status(200).json({ token: accessToken, refreshToken });
+            return res.status(200).json({ token: accessToken });
         }
         else {
             return res.status(403).json({ message: "forbidden" });
