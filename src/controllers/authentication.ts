@@ -41,6 +41,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     });
     res
       .cookie("token", token, {
+        domain: "school-management-system-client-delta.vercel.app",
         sameSite: "none",
         secure: true,
       })
