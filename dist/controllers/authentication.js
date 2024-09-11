@@ -45,7 +45,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             .cookie("token", token, {
             domain: ".vercel.app",
             httpOnly: true,
-            sameSite: "strict",
+            sameSite: "none",
             secure: true,
             path: "/",
         })
@@ -105,7 +105,7 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.clearCookie("token", {
             domain: ".vercel.app",
             httpOnly: true,
-            sameSite: "strict",
+            sameSite: "none",
             secure: true,
             path: "/",
         });

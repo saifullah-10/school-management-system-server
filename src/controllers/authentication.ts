@@ -42,7 +42,7 @@ export const login = async (req: express.Request, res: express.Response) => {
       .cookie("token", token, {
         domain: ".vercel.app",
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "none",
         secure: true,
         path: "/",
       })
@@ -118,7 +118,7 @@ export const logoutUser = async (
     res.clearCookie("token", {
       domain: ".vercel.app",
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "none",
       secure: true,
       path: "/",
     });

@@ -21,9 +21,9 @@ export const isAuthenticate = async (
   } catch (err) {
     return res
       .clearCookie("token", {
-        domain: "school-management-system-client-delta.vercel.app",
+        domain: ".vercel.app",
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "none",
         secure: true,
         path: "/",
       })
