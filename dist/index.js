@@ -17,10 +17,7 @@ const server = http_1.default.createServer(app);
 dotenv_1.default.config();
 //middleware
 app.use((0, cors_1.default)({
-    origin: [
-        "http://localhost:3000",
-        "https://school-management-system-client-delta.vercel.app",
-    ],
+    origin: ["http://localhost:3000", "https://starlight-un-edu.vercel.app"],
     credentials: true,
 }));
 app.use(body_parser_1.default.json());

@@ -15,10 +15,7 @@ dotEnv.config();
 //middleware
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://school-management-system-client-delta.vercel.app",
-    ],
+    origin: ["http://localhost:3000", "https://starlight-un-edu.vercel.app"],
     credentials: true,
   })
 );
