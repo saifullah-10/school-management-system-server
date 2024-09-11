@@ -1,6 +1,6 @@
 import express from "express";
 import dotEnv from "dotenv";
-import Cookies from "js-cookie";
+import session from "cookie-session";
 dotEnv.config();
 import {
   createUser,
@@ -113,6 +113,7 @@ export const logoutUser = async (
   res: express.Response
 ) => {
   try {
+    req.session = null;
     res.clearCookie("token", {
       httpOnly: true,
       sameSite: "none",
