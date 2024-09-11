@@ -98,13 +98,12 @@ exports.registration = registration;
 //logout
 const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const tokenf = req.cookies.token;
-        console.log("before remove  ", tokenf);
         res.clearCookie("token", {
+            domain: ".vercel.app",
+            httpOnly: true,
             sameSite: "none",
             secure: true,
         });
-        console.log("after remove  ", req.cookies.token);
         return res.status(200).json({ logout: true });
     }
     catch (err) {
