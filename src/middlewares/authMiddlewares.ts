@@ -21,7 +21,6 @@ export const isAuthenticate = async (
   } catch (err) {
     return res
       .clearCookie("token", {
-        domain: ".vercel.app",
         httpOnly: true,
         sameSite: "none",
         secure: true,
