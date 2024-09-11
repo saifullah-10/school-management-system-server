@@ -43,6 +43,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         res
             .cookie("token", token, {
+            domain: "localhost",
             sameSite: "none",
             secure: true,
         })
