@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDB = exports.connectToDatabase = void 0;
+exports.connectToDatabase = void 0;
 const mongodb_1 = require("mongodb");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -38,6 +38,4 @@ const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.connectToDatabase = connectToDatabase;
-const getDB = () => client.db('school-managemen');
-exports.getDB = getDB;
 //# sourceMappingURL=connectToDB.js.map
