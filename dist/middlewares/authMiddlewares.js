@@ -30,7 +30,6 @@ const isAuthenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     catch (err) {
         return res
             .clearCookie("token", {
-            domain: ".vercel.app",
             httpOnly: true,
             sameSite: "none",
             secure: true,
