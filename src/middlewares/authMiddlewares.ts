@@ -9,9 +9,13 @@ export const isAuthenticate = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const token = req.cookies.token;
-  if (!token) {
-    return res.status(401).json({ message: "session expired" });
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+  const token = authHeader.split(" ")[1];
+  if (token === null) {
+    return res.status(401);
   }
   try {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET);
@@ -19,15 +23,7 @@ export const isAuthenticate = async (
     merge(req, { identity: user });
     next();
   } catch (err) {
-    return res
-      .clearCookie("token", {
-        httpOnly: true,
-        sameSite: "none",
-        secure: true,
-        path: "/",
-      })
-      .status(403)
-      .json({ message: "session invalid" });
+    return res.status(403).json({ message: "Forbidden" });
   }
 };
 

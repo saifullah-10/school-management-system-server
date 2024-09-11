@@ -43,21 +43,21 @@ const updateSessionToken = (email, data) => __awaiter(void 0, void 0, void 0, fu
     const db = yield (0, connectToDB_1.connectToDatabase)();
     const users = db.collection("users");
     const options = { upsert: true };
-    const updateUser = yield users.updateOne({ email }, { $set: { sessionToken: data } }, options);
+    const updateUser = yield users.updateOne({ email }, { $set: { refreshToken: data } }, options);
     return updateUser;
 });
 exports.updateSessionToken = updateSessionToken;
 const updateSessionTokenById = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
     const db = yield (0, connectToDB_1.connectToDatabase)();
     const users = db.collection("users");
-    const updateUser = yield users.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: { sessionToken: data } });
+    const updateUser = yield users.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: { refreshToken: data } });
     return updateUser;
 });
 exports.updateSessionTokenById = updateSessionTokenById;
 const getUserByToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
     const db = yield (0, connectToDB_1.connectToDatabase)();
     const users = db.collection("users");
-    const userByToken = yield users.findOne({ sessionToken: token });
+    const userByToken = yield users.findOne({ refreshToken: token });
     return userByToken;
 });
 exports.getUserByToken = getUserByToken;

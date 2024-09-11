@@ -38,22 +38,19 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (expectedHash !== dbPass) {
             return res.status(400).json({ message: "Email Or Password Mismatch" });
         }
-        const token = jsonwebtoken_1.default.sign({ email }, process.env.JWT_SECRET, {
-            expiresIn: "24h",
+        const accessToken = jsonwebtoken_1.default.sign({ email }, process.env.JWT_SECRET, {
+            expiresIn: "10m",
         });
-        res
-            .cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 24 * 60 * 60 * 1000,
-        })
-            .status(200)
-            .json({ message: "Logged in" });
-        //TODO not need to send token in database
-        // const updateToken = await updateSessionToken(email, token);
-        // if (updateToken.modifiedCount === 1) {
-        // }
+        const refreshToken = jsonwebtoken_1.default.sign({ email }, process.env.JWT_REFRESH_SECRET, {
+            expiresIn: "10d",
+        });
+        const setInDb = yield (0, user_1.updateSessionToken)(email, refreshToken);
+        if (setInDb.modifiedCount) {
+            return res.status(200).json({ token: accessToken, refreshToken });
+        }
+        else {
+            return res.status(403).json({ message: "forbidden" });
+        }
     }
     catch (err) {
         console.error(err);
@@ -120,4 +117,10 @@ const isUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.isUser = isUser;
+//refresh token
+// export const refreshToken = async () => {
+//   try {
+//     const user = getUserByToken();
+//   } catch (err) {}
+// };
 //# sourceMappingURL=authentication.js.map

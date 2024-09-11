@@ -39,7 +39,7 @@ export const updateSessionToken = async (email: string, data: string) => {
   const options = { upsert: true };
   const updateUser = await users.updateOne(
     { email },
-    { $set: { sessionToken: data } },
+    { $set: { refreshToken: data } },
     options
   );
   return updateUser;
@@ -50,7 +50,7 @@ export const updateSessionTokenById = async (id: string, data: string) => {
 
   const updateUser = await users.updateOne(
     { _id: new ObjectId(id) },
-    { $set: { sessionToken: data } }
+    { $set: { refreshToken: data } }
   );
   return updateUser;
 };
@@ -59,6 +59,6 @@ export const getUserByToken = async (token: string) => {
   const db = await connectToDatabase();
   const users = db.collection("users");
 
-  const userByToken = await users.findOne({ sessionToken: token });
+  const userByToken = await users.findOne({ refreshToken: token });
   return userByToken;
 };
