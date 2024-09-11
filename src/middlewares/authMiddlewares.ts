@@ -30,7 +30,7 @@ export const isAuthenticate = async (
       .json({ message: "session invalid" });
   }
 };
-
+//user check
 export const isOwner = async (
   req: express.Request,
   res: express.Response,
