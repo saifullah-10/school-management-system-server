@@ -112,7 +112,7 @@ export const logoutUser = async (
   res: express.Response
 ) => {
   try {
-    res.cookie("token", "", {
+    res.cookie("toke", "", {
       httpOnly: true,
       secure: true,
       sameSite: "none",
