@@ -1,9 +1,9 @@
 import express from "express";
 import { getUserByEmail } from "../db/user";
 import jwt from "jsonwebtoken";
-
+import dotEnv from "dotenv";
 import { get, merge } from "lodash";
-
+dotEnv.config();
 export const isAuthenticate = async (
   req: express.Request,
   res: express.Response,
