@@ -44,6 +44,7 @@ export const login = async (req: express.Request, res: express.Response) => {
         httpOnly: true,
         secure: true,
         sameSite: "none",
+        maxAge: 24 * 60 * 60 * 1000,
       })
       .status(200)
       .json({ message: "Logged in" });
@@ -116,6 +117,7 @@ export const logoutUser = async (
       httpOnly: true,
       secure: true,
       sameSite: "none",
+      maxAge: 0,
     });
 
     return res.status(200).json({ logout: true });

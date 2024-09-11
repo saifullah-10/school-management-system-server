@@ -46,6 +46,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             httpOnly: true,
             secure: true,
             sameSite: "none",
+            maxAge: 24 * 60 * 60 * 1000,
         })
             .status(200)
             .json({ message: "Logged in" });
@@ -102,6 +103,7 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             httpOnly: true,
             secure: true,
             sameSite: "none",
+            maxAge: 0,
         });
         return res.status(200).json({ logout: true });
     }
