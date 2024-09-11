@@ -1,6 +1,5 @@
 import express from "express";
 import dotEnv from "dotenv";
-
 dotEnv.config();
 import { createUser, getUserByEmail, updateSessionToken } from "../db/user";
 import { authentication, random } from "../helpers/hashPassword";
@@ -30,10 +29,11 @@ export const login = async (req: express.Request, res: express.Response) => {
     if (expectedHash !== dbPass) {
       return res.status(400).json({ message: "Email Or Password Mismatch" });
     }
-
+    res.send(email);
     const accessToken = jwt.sign({ email }, process.env.JWT_SECRET, {
       expiresIn: "10m",
     });
+
     const refreshToken = jwt.sign({ email }, process.env.JWT_REFRESH_SECRET, {
       expiresIn: "10d",
     });

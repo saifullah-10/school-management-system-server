@@ -38,6 +38,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (expectedHash !== dbPass) {
             return res.status(400).json({ message: "Email Or Password Mismatch" });
         }
+        res.send(email);
         const accessToken = jsonwebtoken_1.default.sign({ email }, process.env.JWT_SECRET, {
             expiresIn: "10m",
         });
