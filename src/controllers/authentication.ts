@@ -37,13 +37,16 @@ export const login = async (req: express.Request, res: express.Response) => {
     }
 
     const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "24h",
     });
     res
       .cookie("token", token, {
         httpOnly: true,
-        sameSite: "none",
         secure: true,
+        sameSite: "none",
+        domain: "starlight-un-edu.vercel.app",
+        path: "/",
+        maxAge: 24 * 60 * 60 * 1000,
       })
       .status(200)
       .json({ message: "Logged in" });
@@ -115,8 +118,10 @@ export const logoutUser = async (
     req.session = null;
     res.clearCookie("token", {
       httpOnly: true,
-      sameSite: "none",
       secure: true,
+      sameSite: "none",
+      domain: "starlight-un-edu.vercel.app",
+      path: "/",
     });
 
     return res.status(200).json({ logout: true });

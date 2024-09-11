@@ -39,13 +39,16 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(400).json({ message: "Email Or Password Mismatch" });
         }
         const token = jsonwebtoken_1.default.sign({ email }, process.env.JWT_SECRET, {
-            expiresIn: "1h",
+            expiresIn: "24h",
         });
         res
             .cookie("token", token, {
             httpOnly: true,
-            sameSite: "none",
             secure: true,
+            sameSite: "none",
+            domain: "starlight-un-edu.vercel.app",
+            path: "/",
+            maxAge: 24 * 60 * 60 * 1000,
         })
             .status(200)
             .json({ message: "Logged in" });
@@ -101,8 +104,10 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         req.session = null;
         res.clearCookie("token", {
             httpOnly: true,
-            sameSite: "none",
             secure: true,
+            sameSite: "none",
+            domain: "starlight-un-edu.vercel.app",
+            path: "/",
         });
         return res.status(200).json({ logout: true });
     }
