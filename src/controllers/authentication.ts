@@ -115,7 +115,7 @@ export const logoutUser = async (
   try {
     const tokenf = req.cookies.token;
     console.log("before remove  ", tokenf);
-    Cookies.remove("token");
+    res.clearCookie("tak");
     console.log("after remove  ", req.cookies.token);
 
     return res.status(200).json({ logout: true });
