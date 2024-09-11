@@ -1,13 +1,8 @@
 import express from "express";
 import dotEnv from "dotenv";
-import session from "cookie-session";
+
 dotEnv.config();
-import {
-  createUser,
-  getUserByEmail,
-  getUserByToken,
-  updateSessionToken,
-} from "../db/user";
+import { createUser, getUserByEmail, updateSessionToken } from "../db/user";
 import { authentication, random } from "../helpers/hashPassword";
 import { get, merge } from "lodash";
 import jwt from "jsonwebtoken";
@@ -45,7 +40,7 @@ export const login = async (req: express.Request, res: express.Response) => {
 
     const setInDb = await updateSessionToken(email, refreshToken);
     if (setInDb.modifiedCount) {
-      return res.status(200).json({ token: accessToken, refreshToken });
+      return res.status(200).json({ token: accessToken });
     } else {
       return res.status(403).json({ message: "forbidden" });
     }

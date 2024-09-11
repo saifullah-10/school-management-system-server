@@ -46,7 +46,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         const setInDb = yield (0, user_1.updateSessionToken)(email, refreshToken);
         if (setInDb.modifiedCount) {
-            return res.status(200).json({ token: accessToken, refreshToken });
+            return res.status(200).json({ token: accessToken });
         }
         else {
             return res.status(403).json({ message: "forbidden" });

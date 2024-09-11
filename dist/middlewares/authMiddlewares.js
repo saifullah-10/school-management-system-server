@@ -15,7 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.isOwner = exports.isAuthenticate = void 0;
 const user_1 = require("../db/user");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const dotenv_1 = __importDefault(require("dotenv"));
 const lodash_1 = require("lodash");
+dotenv_1.default.config();
 const isAuthenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const authHeader = req.headers["authorization"];
     if (!authHeader) {
