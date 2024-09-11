@@ -29,7 +29,13 @@ const isAuthenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     }
     catch (err) {
         return res
-            .clearCookie("token")
+            .clearCookie("token", {
+            domain: "school-management-system-client-delta.vercel.app",
+            httpOnly: true,
+            sameSite: "strict",
+            secure: true,
+            path: "/",
+        })
             .status(403)
             .json({ message: "session invalid" });
     }
