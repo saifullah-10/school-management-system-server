@@ -39,6 +39,7 @@ console.log(process.env.JWT_SECRET);
     const accessToken = jwt.sign({ email }, process.env.JWT_SECRET, {
       expiresIn: "10m",
     });
+    res.send(accessToken);
     const refreshToken = jwt.sign({ email }, process.env.JWT_REFRESH_SECRET, {
       expiresIn: "10d",
     });
