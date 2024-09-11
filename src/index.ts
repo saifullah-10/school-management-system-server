@@ -13,9 +13,9 @@ const server = http.createServer(app);
 dotEnv.config();
 
 //middleware
-
 app.use(
   cors({
+    origin: "https://starlight-un-edu.vercel.app",
     credentials: true,
   })
 );

@@ -1,11 +1,22 @@
 import express from "express";
-import { createUser, getUserByEmail, updateSessionToken } from "../db/user";
+import dotEnv from "dotenv";
+import session from "cookie-session";
+dotEnv.config();
+import {
+  createUser,
+  getUserByEmail,
+  updateSessionToken,
+  updateSessionTokenById,
+} from "../db/user";
 import { authentication, random } from "../helpers/hashPassword";
+import { get, merge } from "lodash";
+import jwt from "jsonwebtoken";
 
 //login controller
 export const login = async (req: express.Request, res: express.Response) => {
   try {
     const { email, password } = req.body;
+    console.log(email, password);
     if (!email || !password) {
       return res
         .status(403)
@@ -13,6 +24,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     }
 
     const user = await getUserByEmail(email);
+
     if (!user) {
       return res.status(403).json({ message: "Invalid Email Or Password" });
     }
@@ -24,17 +36,24 @@ export const login = async (req: express.Request, res: express.Response) => {
       return res.status(400).json({ message: "Email Or Password Mismatch" });
     }
 
-    const salt = random();
-    const createToken = authentication(salt, user._id.toString());
-    const updateToken = await updateSessionToken(email, createToken);
-    if (updateToken) {
-      user.sessionToken = createToken;
-      res.cookie("us-tk", user?.sessionToken, {
-        domain: "localhost",
-      });
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: "24h",
+    });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 24 * 60 * 60 * 1000,
+      })
+      .status(200)
+      .json({ message: "Logged in" });
+    //TODO not need to send token in database
+    // const updateToken = await updateSessionToken(email, token);
 
-      return res.status(200).json(user).end();
-    }
+    // if (updateToken.modifiedCount === 1) {
+
+    // }
   } catch (err) {
     console.error(err);
   }
@@ -63,10 +82,11 @@ export const registration = async (
 
       if (user) {
         const getUser = await getUserByEmail(email);
-
+        const uid = getUser?._id;
         const createSessionToken = authentication(
           salt,
-          getUser?._id.toString()
+          getUser?._id.toString(),
+          uid
         );
 
         const updateToken = await updateSessionToken(email, createSessionToken);
@@ -93,17 +113,24 @@ export const logoutUser = async (
   res: express.Response
 ) => {
   try {
-    const { email } = req.body;
-    if (!email) {
-      return res.status(403).json({ message: "Email is Required" });
-    }
-    const updateToken = await updateSessionToken(email, "");
-    if (updateToken) {
-      res.clearCookie("us-tk", { domain: "localhost", path: "/" });
-      return res.status(200).json({ logout: true, message: "Logout Success" });
-    }
-    return res.status(400).json({ logout: false, message: "Try Again" });
+    res.cookie("token", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 0,
+    });
+
+    return res.status(200).json({ logout: true });
   } catch (err) {
     console.error(err);
+  }
+};
+
+//isUser
+
+export const isUser = async (req: express.Request, res: express.Response) => {
+  const user = get(req, "identity");
+  if (user) {
+    return res.status(200).json(merge(user, { message: "from protected" }));
   }
 };
