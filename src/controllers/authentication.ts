@@ -41,6 +41,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     });
     res
       .cookie("token", token, {
+        httpOnly: true,
         sameSite: "none",
         secure: true,
       })
@@ -111,13 +112,12 @@ export const logoutUser = async (
   res: express.Response
 ) => {
   try {
-    const tokenf = req.cookies.token;
-    console.log("before remove  ", tokenf);
     res.clearCookie("token", {
+      domain: ".vercel.app",
+      httpOnly: true,
       sameSite: "none",
       secure: true,
     });
-    console.log("after remove  ", req.cookies.token);
 
     return res.status(200).json({ logout: true });
   } catch (err) {
