@@ -38,6 +38,6 @@ const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.connectToDatabase = connectToDatabase;
-const getDB = () => client.db('school-managemen');
+const getDB = () => client.db('school-management');
 exports.getDB = getDB;
 //# sourceMappingURL=connectToDB.js.map

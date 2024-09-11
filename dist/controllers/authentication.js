@@ -34,6 +34,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(403).json({ message: "Invalid Email Or Password" });
         }
         const expectedHash = (0, hashPassword_1.authentication)(user.authentication.salt, password);
+        console.log(process.env.JWT_SECRET);
         const dbPass = user.authentication.password;
         if (expectedHash !== dbPass) {
             return res.status(400).json({ message: "Email Or Password Mismatch" });
