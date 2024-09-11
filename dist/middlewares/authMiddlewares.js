@@ -40,7 +40,6 @@ const isAuthenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.isAuthenticate = isAuthenticate;
-//user check
 const isOwner = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
