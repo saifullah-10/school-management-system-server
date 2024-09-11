@@ -23,4 +23,4 @@ export const connectToDatabase = async () => {
   }
 };
 
-export const getDB = () => client.db('school-management');
+
