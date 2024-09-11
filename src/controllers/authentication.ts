@@ -40,10 +40,11 @@ export const login = async (req: express.Request, res: express.Response) => {
     });
     res
       .cookie("token", token, {
+        domain: "school-management-system-client-delta.vercel.app",
         httpOnly: true,
-        sameSite: "none",
+        sameSite: "strict",
         secure: true,
-        maxAge: 60 * 60 * 60 * 24,
+        path: "/",
       })
       .status(200)
       .json({ message: "Logged in" });
@@ -112,15 +113,16 @@ export const logoutUser = async (
   res: express.Response
 ) => {
   try {
-    const token = req.cookies.token;
-    console.log("before remove  ", token);
-    const clearCk = res.clearCookie("token", {
+    const tokenf = req.cookies.token;
+    console.log("before remove  ", tokenf);
+    res.clearCookie("token", {
+      domain: "school-management-system-client-delta.vercel.app",
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "strict",
       secure: true,
       path: "/",
     });
-    console.log("after remove  ", token);
+    console.log("after remove  ", req.cookies.token);
 
     return res.status(200).json({ logout: true });
   } catch (err) {
