@@ -43,7 +43,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         res
             .cookie("token", token, {
-            domain: "school-management-system-client-delta.vercel.app",
+            domain: ".vercel.app",
             httpOnly: true,
             sameSite: "strict",
             secure: true,
@@ -103,7 +103,7 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const tokenf = req.cookies.token;
         console.log("before remove  ", tokenf);
         res.clearCookie("token", {
-            domain: "school-management-system-client-delta.vercel.app",
+            domain: ".vercel.app",
             httpOnly: true,
             sameSite: "strict",
             secure: true,
