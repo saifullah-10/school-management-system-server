@@ -1,5 +1,6 @@
 import express from "express";
 import dotEnv from "dotenv";
+import Cookies from "js-cookie";
 dotEnv.config();
 import {
   createUser,
@@ -40,9 +41,8 @@ export const login = async (req: express.Request, res: express.Response) => {
     });
     res
       .cookie("token", token, {
-        domain: ".vercel.app",
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: "none",
         secure: true,
         path: "/",
       })
@@ -115,13 +115,7 @@ export const logoutUser = async (
   try {
     const tokenf = req.cookies.token;
     console.log("before remove  ", tokenf);
-    res.clearCookie("token", {
-      domain: ".vercel.app",
-      httpOnly: true,
-      sameSite: "lax",
-      secure: true,
-      path: "/",
-    });
+    Cookies.remove("token");
     console.log("after remove  ", req.cookies.token);
 
     return res.status(200).json({ logout: true });

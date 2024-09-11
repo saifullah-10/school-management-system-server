@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isUser = exports.logoutUser = exports.registration = exports.login = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
+const js_cookie_1 = __importDefault(require("js-cookie"));
 dotenv_1.default.config();
 const user_1 = require("../db/user");
 const hashPassword_1 = require("../helpers/hashPassword");
@@ -43,9 +44,8 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         res
             .cookie("token", token, {
-            domain: ".vercel.app",
             httpOnly: true,
-            sameSite: "lax",
+            sameSite: "none",
             secure: true,
             path: "/",
         })
@@ -102,13 +102,7 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const tokenf = req.cookies.token;
         console.log("before remove  ", tokenf);
-        res.clearCookie("token", {
-            domain: ".vercel.app",
-            httpOnly: true,
-            sameSite: "lax",
-            secure: true,
-            path: "/",
-        });
+        js_cookie_1.default.remove("token");
         console.log("after remove  ", req.cookies.token);
         return res.status(200).json({ logout: true });
     }
