@@ -22,3 +22,5 @@ export const connectToDatabase = async () => {
     console.error("Database connection failed");
   }
 };
+
+export const getDB = () => client.db('school-managemen');
