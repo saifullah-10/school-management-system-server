@@ -41,10 +41,8 @@ export const login = async (req: express.Request, res: express.Response) => {
     });
     res
       .cookie("token", token, {
-        httpOnly: true,
         sameSite: "none",
         secure: true,
-        path: "/",
       })
       .status(200)
       .json({ message: "Logged in" });
