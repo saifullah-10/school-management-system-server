@@ -29,7 +29,7 @@ export const login = async (req: express.Request, res: express.Response) => {
       return res.status(403).json({ message: "Invalid Email Or Password" });
     }
     const expectedHash = authentication(user.authentication.salt, password);
-
+console.log(process.env.JWT_SECRET);
     const dbPass = user.authentication.password;
 
     if (expectedHash !== dbPass) {
