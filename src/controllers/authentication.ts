@@ -28,7 +28,7 @@ export const login = async (req: express.Request, res: express.Response) => {
       return res.status(400).json({ message: "Email or password mismatch" });
     }
 
-    const accessToken = jwt.sign(email, process.env.JWT_SECRET, {
+    const accessToken = jwt.sign({ email }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
