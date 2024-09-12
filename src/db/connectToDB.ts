@@ -23,4 +23,9 @@ export const connectToDatabase = async () => {
   }
 };
 
-export const getDB = () => client.db('school-managemen');
+export const getDB = () => {
+  if (!client) {
+    throw new Error("Database client not initialized. Call connectToDatabase first.");
+  }
+  return client.db('school-management');
+};
