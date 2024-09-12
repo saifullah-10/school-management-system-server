@@ -17,11 +17,11 @@ const test = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.test = test;
 const getCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const connectDB = (0, connectToDB_1.connectToDatabase)();
-        let db = (0, connectToDB_1.getDB)();
-        const collection = db.collection('coursesCollection');
+        let db = yield (0, connectToDB_1.connectToDatabase)();
+        const collection = db.collection("coursesCollection");
         // Specify the fields to include in the result
-        const courses = yield collection.find({}, {
+        const courses = yield collection
+            .find({}, {
             projection: {
                 _id: 1, // Include the _id field
                 course_name: 1, // Include the course_name field
@@ -29,9 +29,10 @@ const getCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 instructor: 1, // Include the instructor field
                 credit_hours: 1, // Include the instructor field
                 enrollment: 1, // Include the instructor field
-                price: 1 // Include the price field
-            }
-        }).toArray();
+                price: 1, // Include the price field
+            },
+        })
+            .toArray();
         res.status(200).json(courses);
     }
     catch (error) {

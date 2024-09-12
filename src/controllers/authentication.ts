@@ -4,7 +4,7 @@ dotEnv.config();
 import { createUser, getUserByEmail, updateSessionToken } from "../db/user";
 import { authentication, random } from "../helpers/hashPassword";
 import { get, merge } from "lodash";
-// import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 //login controller
 export const login = async (req: express.Request, res: express.Response) => {
@@ -12,9 +12,27 @@ export const login = async (req: express.Request, res: express.Response) => {
     const { email, password } = req.body;
     console.log(email, password);
 
-    console.log("check error");
+    if (!email || !password) {
+      return res.status(403).json({ message: "Email And Password Require" });
+    }
 
-    return res.json({ message: "done" });
+    const user = await getUserByEmail(email);
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid Email OR Password" });
+    }
+
+    const expectedPass = authentication(user.authentication.salt, password);
+    const usserPass = user.authentication.password;
+    if (expectedPass !== usserPass) {
+      return res.status(400).json({ message: "Email or password mismatch" });
+    }
+
+    const accessToken = jwt.sign(email, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    return res.json({ token: accessToken });
   } catch (err) {
     console.error(err);
   }
