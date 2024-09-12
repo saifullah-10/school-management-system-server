@@ -13,6 +13,8 @@ export const login = async (req: express.Request, res: express.Response) => {
     console.log(email, password);
 
     console.log("check error");
+
+    return res.json({ message: "done" });
   } catch (err) {
     console.error(err);
   }
