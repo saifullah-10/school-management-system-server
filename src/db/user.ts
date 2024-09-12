@@ -17,12 +17,14 @@ export const createUser = async (
   email: string,
   password: string,
   salt: string,
-  username: string
+  username: string,
+  role: string
 ) => {
   const db = await connectToDatabase();
   const users = db.collection("users");
   const query = {
     email,
+    role,
     username,
     authentication: {
       salt,
