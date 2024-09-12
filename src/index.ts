@@ -19,6 +19,7 @@ app.use(
     credentials: true,
   })
 );
+app.options("/auth/protected", cors());
 
 app.use(bodyParser.json());
 app.use(cookieParser());
