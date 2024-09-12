@@ -18,14 +18,28 @@ dotenv_1.default.config();
 const user_1 = require("../db/user");
 const hashPassword_1 = require("../helpers/hashPassword");
 const lodash_1 = require("lodash");
-// import jwt from "jsonwebtoken";
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 //login controller
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
         console.log(email, password);
-        console.log("check error");
-        return res.json({ message: "done" });
+        if (!email || !password) {
+            return res.status(403).json({ message: "Email And Password Require" });
+        }
+        const user = yield (0, user_1.getUserByEmail)(email);
+        if (!user) {
+            return res.status(400).json({ message: "Invalid Email OR Password" });
+        }
+        const expectedPass = (0, hashPassword_1.authentication)(user.authentication.salt, password);
+        const usserPass = user.authentication.password;
+        if (expectedPass !== usserPass) {
+            return res.status(400).json({ message: "Email or password mismatch" });
+        }
+        const accessToken = jsonwebtoken_1.default.sign(email, process.env.JWT_SECRET, {
+            expiresIn: "1h",
+        });
+        return res.json({ token: accessToken });
     }
     catch (err) {
         console.error(err);
