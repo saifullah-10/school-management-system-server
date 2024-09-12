@@ -45,8 +45,8 @@ export const registration = async (
   res: express.Response
 ) => {
   try {
-    const { email, password, username } = req.body;
-    if (!email || !password || !username) {
+    const { email, password, username, role } = req.body;
+    if (!email || !password || !username || !role) {
       return res.status(403).json({ message: "All Fields Are Require" });
     }
     //check already user exist in the dtabase
@@ -57,31 +57,24 @@ export const registration = async (
       const salt = random();
 
       const hashPass = authentication(salt, password);
-      const user = await createUser(email, hashPass, salt, username);
+      const user = await createUser(email, hashPass, salt, username, role);
 
-      if (user) {
-        const getUser = await getUserByEmail(email);
-        const uid = getUser?._id;
-        const createSessionToken = authentication(
-          salt,
-          getUser?._id.toString(),
-          uid
-        );
+      if (user.acknowledged) {
+        const accessToken = jwt.sign({ email }, process.env.JWT_SECRET, {
+          expiresIn: "2h",
+        });
 
-        const updateToken = await updateSessionToken(email, createSessionToken);
-        if (updateToken) {
-          getUser.sessionToken = createSessionToken;
-          res.cookie("us-tk", getUser?.sessionToken, {
-            domain: "localhost",
-          });
-          return res.status(200).json(updateToken).end();
-        }
+        return res.status(200).json({ token: accessToken });
+      } else {
+        return res.status(400).json({ message: "user not created" }).end();
       }
-      return res.status(200).json(user).end();
     }
     return res.status(400).json({ message: "User Already Exist" });
   } catch (err) {
-    console.log(err);
+    return res
+      .status(400)
+      .json({ message: "user not created", ...err })
+      .end();
   }
 };
 

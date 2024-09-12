@@ -49,8 +49,8 @@ exports.login = login;
 //registration controller
 const registration = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password, username } = req.body;
-        if (!email || !password || !username) {
+        const { email, password, username, role } = req.body;
+        if (!email || !password || !username || !role) {
             return res.status(403).json({ message: "All Fields Are Require" });
         }
         //check already user exist in the dtabase
@@ -59,26 +59,24 @@ const registration = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (!existingUser) {
             const salt = (0, hashPassword_1.random)();
             const hashPass = (0, hashPassword_1.authentication)(salt, password);
-            const user = yield (0, user_1.createUser)(email, hashPass, salt, username);
-            if (user) {
-                const getUser = yield (0, user_1.getUserByEmail)(email);
-                const uid = getUser === null || getUser === void 0 ? void 0 : getUser._id;
-                const createSessionToken = (0, hashPassword_1.authentication)(salt, getUser === null || getUser === void 0 ? void 0 : getUser._id.toString(), uid);
-                const updateToken = yield (0, user_1.updateSessionToken)(email, createSessionToken);
-                if (updateToken) {
-                    getUser.sessionToken = createSessionToken;
-                    res.cookie("us-tk", getUser === null || getUser === void 0 ? void 0 : getUser.sessionToken, {
-                        domain: "localhost",
-                    });
-                    return res.status(200).json(updateToken).end();
-                }
+            const user = yield (0, user_1.createUser)(email, hashPass, salt, username, role);
+            if (user.acknowledged) {
+                const accessToken = jsonwebtoken_1.default.sign({ email }, process.env.JWT_SECRET, {
+                    expiresIn: "2h",
+                });
+                return res.status(200).json({ token: accessToken });
             }
-            return res.status(200).json(user).end();
+            else {
+                return res.status(400).json({ message: "user not created" }).end();
+            }
         }
         return res.status(400).json({ message: "User Already Exist" });
     }
     catch (err) {
-        console.log(err);
+        return res
+            .status(400)
+            .json(Object.assign({ message: "user not created" }, err))
+            .end();
     }
 });
 exports.registration = registration;
