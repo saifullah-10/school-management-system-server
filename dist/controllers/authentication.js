@@ -36,7 +36,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (expectedPass !== usserPass) {
             return res.status(400).json({ message: "Email or password mismatch" });
         }
-        const accessToken = jsonwebtoken_1.default.sign(email, process.env.JWT_SECRET, {
+        const accessToken = jsonwebtoken_1.default.sign({ email }, process.env.JWT_SECRET, {
             expiresIn: "1h",
         });
         return res.json({ token: accessToken });
