@@ -24,6 +24,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
         console.log(email, password);
+        console.log("check error");
     }
     catch (err) {
         console.error(err);

@@ -11,6 +11,8 @@ export const login = async (req: express.Request, res: express.Response) => {
   try {
     const { email, password } = req.body;
     console.log(email, password);
+
+    console.log("check error");
   } catch (err) {
     console.error(err);
   }
