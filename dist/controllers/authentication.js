@@ -18,40 +18,13 @@ dotenv_1.default.config();
 const user_1 = require("../db/user");
 const hashPassword_1 = require("../helpers/hashPassword");
 const lodash_1 = require("lodash");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+// import jwt from "jsonwebtoken";
 //login controller
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
         console.log(email, password);
-        if (!email || !password) {
-            return res
-                .status(403)
-                .json({ message: "Email and Password are required" });
-        }
-        const user = yield (0, user_1.getUserByEmail)(email);
-        if (!user) {
-            return res.status(403).json({ message: "Invalid Email Or Password" });
-        }
-        const expectedHash = (0, hashPassword_1.authentication)(user.authentication.salt, password);
-        const dbPass = user.authentication.password;
-        if (expectedHash !== dbPass) {
-            return res.status(400).json({ message: "Email Or Password Mismatch" });
-        }
-        res.send(email);
-        const accessToken = jsonwebtoken_1.default.sign({ email }, process.env.JWT_SECRET, {
-            expiresIn: "10m",
-        });
-        const refreshToken = jsonwebtoken_1.default.sign({ email }, process.env.JWT_REFRESH_SECRET, {
-            expiresIn: "10d",
-        });
-        const setInDb = yield (0, user_1.updateSessionToken)(email, refreshToken);
-        if (setInDb.modifiedCount) {
-            return res.status(200).json({ token: accessToken });
-        }
-        else {
-            return res.status(403).json({ message: "forbidden" });
-        }
+        console.log("check error");
     }
     catch (err) {
         console.error(err);
@@ -94,7 +67,7 @@ const registration = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.registration = registration;
-//logout
+// //logout
 const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         res.cookie("token", "", {
@@ -110,7 +83,7 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.logoutUser = logoutUser;
-//isUser
+// //isUser
 const isUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = (0, lodash_1.get)(req, "identity");
     if (user) {

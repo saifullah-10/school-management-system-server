@@ -4,20 +4,15 @@ dotEnv.config();
 import { createUser, getUserByEmail, updateSessionToken } from "../db/user";
 import { authentication, random } from "../helpers/hashPassword";
 import { get, merge } from "lodash";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 
 //login controller
 export const login = async (req: express.Request, res: express.Response) => {
   try {
     const { email, password } = req.body;
-    console.log(email, password,"hi");
-    if (!email || !password) {
-      return res
-        .status(403)
-        .json({ message: "Email and Password are required" });
-    }
+    console.log(email, password);
 
-    
+    console.log("check error");
   } catch (err) {
     console.error(err);
   }
@@ -70,7 +65,7 @@ export const registration = async (
   }
 };
 
-//logout
+// //logout
 
 export const logoutUser = async (
   req: express.Request,
@@ -90,7 +85,7 @@ export const logoutUser = async (
   }
 };
 
-//isUser
+// //isUser
 
 export const isUser = async (req: express.Request, res: express.Response) => {
   const user = get(req, "identity");
