@@ -19,6 +19,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const lodash_1 = require("lodash");
 dotenv_1.default.config();
 const isAuthenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    res.header("Access-Control-Allow-Origin", "https://starlight-un-edu.vercel.app");
+    res.header("Access-Control-Allow-Credentials", "true");
     const authHeader = req.headers["authorization"];
     if (!authHeader) {
         return res.status(403).json({ message: "Forbidden" });

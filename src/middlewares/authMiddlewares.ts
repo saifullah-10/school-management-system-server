@@ -9,6 +9,11 @@ export const isAuthenticate = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://starlight-un-edu.vercel.app"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
   const authHeader = req.headers["authorization"];
   if (!authHeader) {
     return res.status(403).json({ message: "Forbidden" });
