@@ -24,13 +24,14 @@ const getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getUserByEmail = getUserByEmail;
-const createUser = (email, password, salt, username, role) => __awaiter(void 0, void 0, void 0, function* () {
+const createUser = (email, password, salt, username, role, photourl) => __awaiter(void 0, void 0, void 0, function* () {
     const db = yield (0, connectToDB_1.connectToDatabase)();
     const users = db.collection("users");
     const query = {
         email,
         role,
         username,
+        photoUrl: photourl,
         authentication: {
             salt,
             password,
