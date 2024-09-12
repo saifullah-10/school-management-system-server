@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserByToken = exports.updateSessionTokenById = exports.updateSessionToken = exports.createUser = exports.getUserByEmail = void 0;
+exports.getAllUser = exports.getUserByToken = exports.updateSessionTokenById = exports.updateSessionToken = exports.createUser = exports.getUserByEmail = void 0;
 const mongodb_1 = require("mongodb");
 const connectToDB_1 = require("./connectToDB");
 const getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
@@ -61,4 +61,16 @@ const getUserByToken = (token) => __awaiter(void 0, void 0, void 0, function* ()
     return userByToken;
 });
 exports.getUserByToken = getUserByToken;
+const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const db = yield (0, connectToDB_1.connectToDatabase)();
+        const users = db.collection("users");
+        const allUser = yield users.find().toArray();
+        return allUser;
+    }
+    catch (err) {
+        return err;
+    }
+});
+exports.getAllUser = getAllUser;
 //# sourceMappingURL=user.js.map

@@ -62,3 +62,14 @@ export const getUserByToken = async (token: string) => {
   const userByToken = await users.findOne({ refreshToken: token });
   return userByToken;
 };
+
+export const getAllUser = async () => {
+  try {
+    const db = await connectToDatabase();
+    const users = db.collection("users");
+    const allUser = await users.find().toArray();
+    return allUser;
+  } catch (err) {
+    return err;
+  }
+};
