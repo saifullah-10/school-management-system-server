@@ -49,7 +49,7 @@ exports.login = login;
 //registration controller
 const registration = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password, username, role } = req.body;
+        const { email, password, username, role, photourl } = req.body;
         if (!email || !password || !username || !role) {
             return res.status(403).json({ message: "All Fields Are Require" });
         }
@@ -59,7 +59,7 @@ const registration = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (!existingUser) {
             const salt = (0, hashPassword_1.random)();
             const hashPass = (0, hashPassword_1.authentication)(salt, password);
-            const user = yield (0, user_1.createUser)(email, hashPass, salt, username, role);
+            const user = yield (0, user_1.createUser)(email, hashPass, salt, username, role, photourl);
             if (user.acknowledged) {
                 const accessToken = jsonwebtoken_1.default.sign({ email }, process.env.JWT_SECRET, {
                     expiresIn: "2h",

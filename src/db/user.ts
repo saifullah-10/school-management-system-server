@@ -18,7 +18,8 @@ export const createUser = async (
   password: string,
   salt: string,
   username: string,
-  role: string
+  role: string,
+  photourl: string
 ) => {
   const db = await connectToDatabase();
   const users = db.collection("users");
@@ -26,6 +27,7 @@ export const createUser = async (
     email,
     role,
     username,
+    photoUrl: photourl,
     authentication: {
       salt,
       password,

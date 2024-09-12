@@ -45,7 +45,7 @@ export const registration = async (
   res: express.Response
 ) => {
   try {
-    const { email, password, username, role } = req.body;
+    const { email, password, username, role, photourl } = req.body;
     if (!email || !password || !username || !role) {
       return res.status(403).json({ message: "All Fields Are Require" });
     }
@@ -57,7 +57,14 @@ export const registration = async (
       const salt = random();
 
       const hashPass = authentication(salt, password);
-      const user = await createUser(email, hashPass, salt, username, role);
+      const user = await createUser(
+        email,
+        hashPass,
+        salt,
+        username,
+        role,
+        photourl
+      );
 
       if (user.acknowledged) {
         const accessToken = jwt.sign({ email }, process.env.JWT_SECRET, {
