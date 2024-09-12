@@ -1,13 +1,7 @@
 import express from "express";
 import dotEnv from "dotenv";
-import session from "cookie-session";
 dotEnv.config();
-import {
-  createUser,
-  getUserByEmail,
-  updateSessionToken,
-  updateSessionTokenById,
-} from "../db/user";
+import { createUser, getUserByEmail, updateSessionToken } from "../db/user";
 import { authentication, random } from "../helpers/hashPassword";
 import { get, merge } from "lodash";
 import jwt from "jsonwebtoken";
@@ -17,43 +11,28 @@ export const login = async (req: express.Request, res: express.Response) => {
   try {
     const { email, password } = req.body;
     console.log(email, password);
+
     if (!email || !password) {
-      return res
-        .status(403)
-        .json({ message: "Email and Password are required" });
+      return res.status(403).json({ message: "Email And Password Require" });
     }
 
     const user = await getUserByEmail(email);
 
     if (!user) {
-      return res.status(403).json({ message: "Invalid Email Or Password" });
-    }
-    const expectedHash = authentication(user.authentication.salt, password);
-
-    const dbPass = user.authentication.password;
-
-    if (expectedHash !== dbPass) {
-      return res.status(400).json({ message: "Email Or Password Mismatch" });
+      return res.status(400).json({ message: "Invalid Email OR Password" });
     }
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-      expiresIn: "24h",
+    const expectedPass = authentication(user.authentication.salt, password);
+    const usserPass = user.authentication.password;
+    if (expectedPass !== usserPass) {
+      return res.status(400).json({ message: "Email or password mismatch" });
+    }
+
+    const accessToken = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
     });
-    res
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 24 * 60 * 60 * 1000,
-      })
-      .status(200)
-      .json({ message: "Logged in" });
-    //TODO not need to send token in database
-    // const updateToken = await updateSessionToken(email, token);
 
-    // if (updateToken.modifiedCount === 1) {
-
-    // }
+    return res.json({ token: accessToken });
   } catch (err) {
     console.error(err);
   }
@@ -106,7 +85,7 @@ export const registration = async (
   }
 };
 
-//logout
+// //logout
 
 export const logoutUser = async (
   req: express.Request,
@@ -126,7 +105,7 @@ export const logoutUser = async (
   }
 };
 
-//isUser
+// //isUser
 
 export const isUser = async (req: express.Request, res: express.Response) => {
   const user = get(req, "identity");
@@ -134,3 +113,10 @@ export const isUser = async (req: express.Request, res: express.Response) => {
     return res.status(200).json(merge(user, { message: "from protected" }));
   }
 };
+
+//refresh token
+// export const refreshToken = async () => {
+//   try {
+//     const user = getUserByToken();
+//   } catch (err) {}
+// };

@@ -25,35 +25,21 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { email, password } = req.body;
         console.log(email, password);
         if (!email || !password) {
-            return res
-                .status(403)
-                .json({ message: "Email and Password are required" });
+            return res.status(403).json({ message: "Email And Password Require" });
         }
         const user = yield (0, user_1.getUserByEmail)(email);
         if (!user) {
-            return res.status(403).json({ message: "Invalid Email Or Password" });
+            return res.status(400).json({ message: "Invalid Email OR Password" });
         }
-        const expectedHash = (0, hashPassword_1.authentication)(user.authentication.salt, password);
-        const dbPass = user.authentication.password;
-        if (expectedHash !== dbPass) {
-            return res.status(400).json({ message: "Email Or Password Mismatch" });
+        const expectedPass = (0, hashPassword_1.authentication)(user.authentication.salt, password);
+        const usserPass = user.authentication.password;
+        if (expectedPass !== usserPass) {
+            return res.status(400).json({ message: "Email or password mismatch" });
         }
-        const token = jsonwebtoken_1.default.sign({ email }, process.env.JWT_SECRET, {
-            expiresIn: "24h",
+        const accessToken = jsonwebtoken_1.default.sign({ email }, process.env.JWT_SECRET, {
+            expiresIn: "1h",
         });
-        res
-            .cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 24 * 60 * 60 * 1000,
-        })
-            .status(200)
-            .json({ message: "Logged in" });
-        //TODO not need to send token in database
-        // const updateToken = await updateSessionToken(email, token);
-        // if (updateToken.modifiedCount === 1) {
-        // }
+        return res.json({ token: accessToken });
     }
     catch (err) {
         console.error(err);
@@ -96,7 +82,7 @@ const registration = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.registration = registration;
-//logout
+// //logout
 const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         res.cookie("token", "", {
@@ -112,7 +98,7 @@ const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.logoutUser = logoutUser;
-//isUser
+// //isUser
 const isUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = (0, lodash_1.get)(req, "identity");
     if (user) {
@@ -120,4 +106,10 @@ const isUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.isUser = isUser;
+//refresh token
+// export const refreshToken = async () => {
+//   try {
+//     const user = getUserByToken();
+//   } catch (err) {}
+// };
 //# sourceMappingURL=authentication.js.map

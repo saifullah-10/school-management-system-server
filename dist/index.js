@@ -17,9 +17,10 @@ const server = http_1.default.createServer(app);
 dotenv_1.default.config();
 //middleware
 app.use((0, cors_1.default)({
-    origin: "https://starlight-un-edu.vercel.app",
+    origin: ["https://starlight-un-edu.vercel.app", "http://localhost:3000"],
     credentials: true,
 }));
+app.options("/auth/protected", (0, cors_1.default)());
 app.use(body_parser_1.default.json());
 app.use((0, cookie_parser_1.default)());
 app.use((0, compression_1.default)());

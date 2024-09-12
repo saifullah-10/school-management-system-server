@@ -15,10 +15,11 @@ dotEnv.config();
 //middleware
 app.use(
   cors({
-    origin: "https://starlight-un-edu.vercel.app",
+    origin: ["https://starlight-un-edu.vercel.app", "http://localhost:3000"],
     credentials: true,
   })
 );
+app.options("/auth/protected", cors());
 
 app.use(bodyParser.json());
 app.use(cookieParser());
