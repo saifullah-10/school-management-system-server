@@ -13,12 +13,12 @@ exports.getNoticeDataCollection = exports.postNoticeDataCollection = void 0;
 const notice_1 = require("../db/notice");
 const postNoticeDataCollection = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { title, content, posted, postedBy } = req.body;
-        if (!title || !content || !posted || !postedBy) {
+        const { title, content, posted: datePosted, postedBy } = req.body;
+        if (!title || !content || !datePosted || !postedBy) {
             return res.status(404).json({ message: "All field Are Require" });
         }
+        const posted = new Date(datePosted);
         const noticeData = { title, content, posted, postedBy };
-        // return res.json(noticeData);
         const saveToDb = yield (0, notice_1.postNoticeData)(noticeData);
         if (saveToDb.acknowledged) {
             return res.status(200).json({ message: 1 }).end();
@@ -30,9 +30,13 @@ const postNoticeDataCollection = (req, res) => __awaiter(void 0, void 0, void 0,
 });
 exports.postNoticeDataCollection = postNoticeDataCollection;
 const getNoticeDataCollection = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { searchdate, title } = req.query;
+    console.log(searchdate, title);
     try {
-        const getData = yield (0, notice_1.getNoticeData)();
-        return res.status(200).json(getData);
+        if (typeof searchdate === "string" && typeof title === "string") {
+            const getData = yield (0, notice_1.getNoticeData)(title, searchdate);
+            return res.status(200).json(getData);
+        }
     }
     catch (err) {
         return res.status(403).json({ message: "Forbidden" });
