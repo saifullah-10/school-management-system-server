@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCourses = exports.test = void 0;
+exports.Courses = exports.getCourses = exports.test = void 0;
 const connectToDB_1 = require("../db/connectToDB");
 const test = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.send("from course").end();
@@ -41,4 +41,17 @@ const getCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getCourses = getCourses;
+const Courses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let db = (0, connectToDB_1.getDB)();
+        const limit = parseInt(req.query.limit) || 0;
+        const courses = yield db.collection("coursesCollection").find().limit(limit).toArray();
+        res.status(200).json(courses);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to retrieve courses" });
+        console.error(error);
+    }
+});
+exports.Courses = Courses;
 //# sourceMappingURL=courses.js.map

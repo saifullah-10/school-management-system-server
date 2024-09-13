@@ -20,8 +20,21 @@ export const getAttendanceRecordByName = async (req: Request, res: Response) => 
     const db = await getDB();
     const name = req.params.name;
     const record = await db.collection('attendance').findOne({ name });
+
     if (record) {
-      res.json(record);
+      // Sort the attendance data by date
+      const sortedAttendance = Object.entries(record.attendance)
+        .sort(([dateA], [dateB]) => new Date(dateB).getTime() - new Date(dateA).getTime()) // Sort by date
+        .reduce((acc, [date, courses]) => {
+          acc[date] = courses as Record<string, 'P' | 'A' | '-'>; // Assert the type of 'courses'
+          return acc;
+        }, {} as Record<string, Record<string, 'P' | 'A' | '-'>>);
+
+      // Return the sorted attendance record
+      res.json({
+        ...record,
+        attendance: sortedAttendance,
+      });
     } else {
       res.status(404).json({ message: 'Record not found' });
     }
@@ -30,30 +43,35 @@ export const getAttendanceRecordByName = async (req: Request, res: Response) => 
   }
 };
 
+
+
 // Add a new attendance record
-export const addAttendanceRecord = async (req: Request, res: Response) => {
-  try {
-    const db = await getDB();
-    const newRecord = req.body;
-    const result = await db.collection('attendance').insertOne(newRecord);
-    res.status(201).json(result);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-};
+// export const addAttendanceRecord = async (req: Request, res: Response) => {
+//   try {
+//     const db = await getDB();
+//     const newRecord = req.body;
+//     const result = await db.collection('attendance').insertOne(newRecord);
+//     res.status(201).json(result);
+//   } catch (err) {
+//     res.status(500).json({ message: 'Server error', error: err.message });
+//   }
+// };
 
 // Update an existing attendance record by student name
 export const updateAttendanceRecord = async (req: Request, res: Response) => {
   try {
     const db = await getDB();
     const name = req.params.name;
-    const updatedData = req.body;
+    const { attendance } = req.body;  // Assuming the body contains { attendance: { [date]: { courseName: 'P' | 'A' } } }
+
+    // Use $set to update the specific date inside the attendance object
     const result = await db.collection('attendance').updateOne(
-      { name },
-      { $set: updatedData }
+      { name },  // Find the student by name
+      { $set: { [`attendance.${Object.keys(attendance)[0]}`]: Object.values(attendance)[0] } }  // Update only the attendance for the specific date
     );
+
     if (result.modifiedCount > 0) {
-      res.json({ message: 'Record updated' });
+      res.json({ message: 'Record updated successfully' });
     } else {
       res.status(404).json({ message: 'Record not found or no changes made' });
     }
