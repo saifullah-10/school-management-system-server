@@ -23,11 +23,31 @@ const postNoticeData = (data) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.postNoticeData = postNoticeData;
-const getNoticeData = () => __awaiter(void 0, void 0, void 0, function* () {
+const getNoticeData = (title, posted) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log(title, posted);
+        const query = {};
+        if (title) {
+            query.title = { $regex: title, $options: "i" };
+        }
+        const date = new Date(posted);
+        if (isNaN(date.getTime())) {
+            console.log("Invalid date format:", posted);
+        }
+        if (typeof posted === "string" && posted) {
+            const startDate = new Date(date.setUTCHours(0, 0, 0, 0));
+            const endDate = new Date(date.setUTCHours(23, 59, 59, 999));
+            query.posted = {
+                $gte: startDate,
+                $lt: endDate,
+            };
+        }
         const db = yield (0, connectToDB_1.connectToDatabase)();
         const collection = db.collection("notice");
-        const saveData = yield collection.find().toArray();
+        const saveData = yield collection
+            .find(query)
+            .sort({ $natural: -1 })
+            .toArray();
         return saveData;
     }
     catch (err) {
