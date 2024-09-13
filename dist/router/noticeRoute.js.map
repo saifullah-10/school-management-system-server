@@ -1,0 +1,1 @@
+{"version":3,"file":"noticeRoute.js","sourceRoot":"","sources":["../../src/router/noticeRoute.ts"],"names":[],"mappings":";;AACA,kDAG+B;AAE/B,kBAAe,CAAC,MAAsB,EAAE,EAAE;IACxC,MAAM,CAAC,IAAI,CAAC,cAAc,EAAE,iCAAwB,CAAC,CAAC;IACtD,MAAM,CAAC,GAAG,CAAC,SAAS,EAAE,gCAAuB,CAAC,CAAC;AACjD,CAAC,CAAC"}
