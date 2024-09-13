@@ -18,7 +18,7 @@ export const isAuthenticate = async (
   res.header("Access-Control-Allow-Credentials", "true");
   const authHeader = req.headers["authorization"];
   // const authHeader =
-  //   "Beareer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRha2lAZ21haWwuY29tIiwiaWF0IjoxNzI2MTEwMDE3LCJleHAiOjE3MjYxMTM2MTd9.suTCIXXvYIFok0ijIAfaM-rAUaP_R1YHKzu9NcR8Y48";
+  //   "Beareer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRha2lAZ21haWwuY29tIiwiaWF0IjoxNzI2MTQ5NjMzLCJleHAiOjE3MjYxNTMyMzN9.PpM85QFeOb6TC76br02yjOIfoQ9EZsBcMFemVeng2do";
 
   if (!authHeader) {
     return res.status(403).json({ message: "Forbidden" });
