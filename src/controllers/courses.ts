@@ -1,5 +1,5 @@
 import express from "express";
-import { connectToDatabase } from "../db/connectToDB";
+import { connectToDatabase, getDB } from "../db/connectToDB";
 
 export const test = async (req: express.Request, res: express.Response) => {
   return res.send("from course").end();
@@ -31,6 +31,21 @@ export const getCourses = async (
       )
       .toArray();
 
+    res.status(200).json(courses);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to retrieve courses" });
+    console.error(error);
+  }
+};
+export const Courses = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    let db = getDB();
+    const limit = parseInt(req.query.limit as string) || 0;
+
+    const courses = await db.collection("coursesCollection").find().limit(limit).toArray();
     res.status(200).json(courses);
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve courses" });
