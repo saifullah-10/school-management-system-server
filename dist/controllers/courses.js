@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Courses = exports.getCourses = exports.test = void 0;
+exports.CourseByName = exports.Courses = exports.getCourses = exports.test = void 0;
 const connectToDB_1 = require("../db/connectToDB");
+const mongodb_1 = require("mongodb");
 const test = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.send("from course").end();
 });
@@ -54,4 +55,18 @@ const Courses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.Courses = Courses;
+const CourseByName = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let db = (0, connectToDB_1.getDB)();
+        const id = req.params.id;
+        const query = { _id: new mongodb_1.ObjectId(id) };
+        const course = yield db.collection("coursesCollection").findOne(query);
+        res.status(200).json(course);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Failed to retrieve course' });
+        console.error('Error fetching course:', error);
+    }
+});
+exports.CourseByName = CourseByName;
 //# sourceMappingURL=courses.js.map
