@@ -10,11 +10,12 @@ export const isAuthenticate = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  res.header(
-    "Access-Control-Allow-Origin",
+  const allowedOrigins = ["https://starlight-un-edu.vercel.app", "http://localhost:3000"];
+  const origin = req.headers.origin as string;
 
-    "https://starlight-un-edu.vercel.app"
-  );
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
   res.header("Access-Control-Allow-Credentials", "true");
   const authHeader = req.headers["authorization"];
   // const authHeader =
