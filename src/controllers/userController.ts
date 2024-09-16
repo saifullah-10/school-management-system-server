@@ -41,13 +41,10 @@ export const addCourseToUser = async (req: Request, res: Response) => {
     }
 };
 
-export const UserById = async (req: Request, res: Response) => {
+export const AllUser = async (req: Request, res: Response) => {
     const db = await connectToDatabase();
     const users = db.collection("users");
-    const id = req.params.id;
 
-    const query = { _id: new ObjectId(id) };
-
-    const course = await users.findOne(query);
+    const course = await users.find().toArray();
     res.status(200).json(course);
 }

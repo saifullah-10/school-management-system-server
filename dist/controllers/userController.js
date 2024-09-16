@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserById = exports.addCourseToUser = void 0;
+exports.AllUser = exports.addCourseToUser = void 0;
 const mongodb_1 = require("mongodb");
 const connectToDB_1 = require("../db/connectToDB");
 const addCourseToUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -43,13 +43,11 @@ const addCourseToUser = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.addCourseToUser = addCourseToUser;
-const UserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const AllUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const db = yield (0, connectToDB_1.connectToDatabase)();
     const users = db.collection("users");
-    const id = req.params.id;
-    const query = { _id: new mongodb_1.ObjectId(id) };
-    const course = yield users.findOne(query);
+    const course = yield users.find().toArray();
     res.status(200).json(course);
 });
-exports.UserById = UserById;
+exports.AllUser = AllUser;
 //# sourceMappingURL=userController.js.map

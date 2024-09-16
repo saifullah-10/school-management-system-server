@@ -1,7 +1,7 @@
 import express from "express";
-import { addCourseToUser, UserById } from "../controllers/userController";
+import { addCourseToUser, AllUser } from "../controllers/userController";
 
 export default (router: express.Router) => {
     router.patch("/users/:userId/courses", addCourseToUser);
-    router.get("/users/:id",  UserById);
+    router.get("/users",  AllUser);
 };
