@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCourses = exports.test = void 0;
+exports.postCorseData = exports.getCourses = exports.test = void 0;
 const connectToDB_1 = require("../db/connectToDB");
+const courses_1 = require("../db/courses");
 const test = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.send("from course").end();
 });
@@ -41,4 +42,24 @@ const getCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getCourses = getCourses;
+//post course data
+const postCorseData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { course_code, title, author, category, overview, objectives, modules, prerequisites, duration, schedule, format, language, certification, course_image, course_name, description, lessons, credit_hours, enrollment, instructor, price } = req.body;
+    if (!course_code || !title || !author || !category ||
+        !overview || !objectives || !modules || !prerequisites ||
+        !duration || !schedule || !format || !language ||
+        !certification || !course_image || !course_name || !description ||
+        !lessons || !credit_hours || !enrollment || !instructor || !price) {
+        return res.status(400).json({ message: "Validation failed: All fields are required." });
+    }
+    const data = { course_code, title, author, category, overview, objectives, modules, prerequisites, duration, schedule, format, language, certification, course_image, course_name, description, lessons: Number(lessons), credit_hours, enrollment: Number(enrollment), instructor, price: Number(price) };
+    try {
+        const response = yield (0, courses_1.postCourses)(data);
+        return res.status(200).json(response);
+    }
+    catch (err) {
+        return res.status(400).json({ message: "failed to posted data" });
+    }
+});
+exports.postCorseData = postCorseData;
 //# sourceMappingURL=courses.js.map

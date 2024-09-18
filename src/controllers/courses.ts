@@ -1,5 +1,7 @@
+
 import express from "express";
 import { connectToDatabase } from "../db/connectToDB";
+import { postCourses } from "../db/courses";
 
 export const test = async (req: express.Request, res: express.Response) => {
   return res.send("from course").end();
@@ -37,3 +39,38 @@ export const getCourses = async (
     console.error(error);
   }
 };
+
+
+//post course data
+
+export const postCorseData = async(req:express.Request, res: express.Response)=>{
+
+
+  const {course_code, title, author, category, overview, objectives, modules, prerequisites, duration, schedule, format, language, certification, course_image, course_name, description, lessons, credit_hours, enrollment, instructor, price} = req.body;
+
+  if (!course_code || !title || !author || !category || 
+    !overview || !objectives || !modules || !prerequisites || 
+    !duration || !schedule || !format || !language || 
+    !certification || !course_image || !course_name || !description || 
+    !lessons || !credit_hours || !enrollment || !instructor || !price) {
+
+      return res.status(400).json({message:"Validation failed: All fields are required."})
+    
+}
+
+const data = {course_code, title, author, category, overview, objectives, modules, prerequisites, duration, schedule, format, language, certification, course_image, course_name, description, lessons: Number(lessons), credit_hours, enrollment: Number(enrollment), instructor, price: Number(price)}
+
+try{
+
+  const response = await postCourses(data)
+
+
+  return res.status(200).json(response)
+
+
+}catch(err){
+  return res.status(400).json({message: "failed to posted data"})
+}
+
+  
+}
