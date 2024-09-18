@@ -15,7 +15,7 @@ dotEnv.config();
 //middleware
 app.use(
   cors({
-    origin: ["https://starlight-un-edu.vercel.app", "http://localhost:3000"],
+    origin: ["https://starlight-un-edu.vercel.app","https://crispy-space-trout-v66774p7gqrqcpxrj-3000.app.github.dev", "http://localhost:3000","http://127.0.0.1:3000", "http://127.0.0.1:3001"],
     credentials: true,
   })
 );

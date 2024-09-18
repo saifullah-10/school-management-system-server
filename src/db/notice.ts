@@ -1,6 +1,6 @@
 import { NoticeData } from "noticeTypes";
 import { connectToDatabase } from "./connectToDB";
-import moment from "moment-timezone";
+
 
 export const postNoticeData = async (data: NoticeData) => {
   try {

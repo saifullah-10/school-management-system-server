@@ -17,7 +17,7 @@ const server = http_1.default.createServer(app);
 dotenv_1.default.config();
 //middleware
 app.use((0, cors_1.default)({
-    origin: ["https://starlight-un-edu.vercel.app", "http://localhost:3000"],
+    origin: ["https://starlight-un-edu.vercel.app", "https://crispy-space-trout-v66774p7gqrqcpxrj-3000.app.github.dev", "http://localhost:3000", "http://127.0.0.1:3000", "http://127.0.0.1:3001"],
     credentials: true,
 }));
 app.options("/auth/protected", (0, cors_1.default)());
