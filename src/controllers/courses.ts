@@ -1,6 +1,8 @@
 
 import express from "express";
-import { connectToDatabase } from "../db/connectToDB";
+import { connectToDatabase, getDB } from "../db/connectToDB";
+import { ObjectId } from "mongodb";
+
 import { postCourses } from "../db/courses";
 
 export const test = async (req: express.Request, res: express.Response) => {
@@ -37,6 +39,39 @@ export const getCourses = async (
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve courses" });
     console.error(error);
+  }
+};
+
+export const Courses = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    let db = getDB();
+    const limit = parseInt(req.query.limit as string) || 0;
+
+    const courses = await db.collection("coursesCollection").find().limit(limit).toArray();
+    res.status(200).json(courses);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to retrieve courses" });
+    console.error(error);
+  }
+};
+
+export const CourseByName = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    let db = getDB();
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+
+    const course = await db.collection("coursesCollection").findOne(query);
+    res.status(200).json(course);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve course' });
+    console.error('Error fetching course:', error);
   }
 };
 

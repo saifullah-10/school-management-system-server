@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postCorseData = exports.getCourses = exports.test = void 0;
+exports.postCorseData = exports.CourseByName = exports.Courses = exports.getCourses = exports.test = void 0;
 const connectToDB_1 = require("../db/connectToDB");
+const mongodb_1 = require("mongodb");
 const courses_1 = require("../db/courses");
 const test = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.send("from course").end();
@@ -42,6 +43,33 @@ const getCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getCourses = getCourses;
+const Courses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let db = (0, connectToDB_1.getDB)();
+        const limit = parseInt(req.query.limit) || 0;
+        const courses = yield db.collection("coursesCollection").find().limit(limit).toArray();
+        res.status(200).json(courses);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to retrieve courses" });
+        console.error(error);
+    }
+});
+exports.Courses = Courses;
+const CourseByName = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let db = (0, connectToDB_1.getDB)();
+        const id = req.params.id;
+        const query = { _id: new mongodb_1.ObjectId(id) };
+        const course = yield db.collection("coursesCollection").findOne(query);
+        res.status(200).json(course);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Failed to retrieve course' });
+        console.error('Error fetching course:', error);
+    }
+});
+exports.CourseByName = CourseByName;
 //post course data
 const postCorseData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { course_code, title, author, category, overview, objectives, modules, prerequisites, duration, schedule, format, language, certification, course_image, course_name, description, lessons, credit_hours, enrollment, instructor, price } = req.body;
